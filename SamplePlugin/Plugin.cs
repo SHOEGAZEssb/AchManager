@@ -1,3 +1,4 @@
+using AchManager.AchievementTrigger;
 using AchManager.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -5,6 +6,8 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.IO;
 
@@ -12,82 +15,87 @@ namespace AchManager;
 
 public sealed class Plugin : IDalamudPlugin
 {
-    private const string CommandName = "/pmycommand";
+  private const string CommandName = "/pmycommand";
 
-    private DalamudPluginInterface PluginInterface { get; init; }
-    private ICommandManager CommandManager { get; init; }
-    public Configuration Configuration { get; init; }
+  private DalamudPluginInterface PluginInterface { get; init; }
+  private ICommandManager CommandManager { get; init; }
+  public Configuration Configuration { get; init; }
 
-    public readonly WindowSystem WindowSystem = new("AchManager");
-    private ConfigWindow ConfigWindow { get; init; }
-    private MainWindow MainWindow { get; init; }
+  public readonly WindowSystem WindowSystem = new("AchManager");
+  private ConfigWindow ConfigWindow { get; init; }
+  private MainWindow MainWindow { get; init; }
 
-    private ContextMenuManager ContextMenuManager { get; init; }
-    private WatchedAchievement _ach;
+  private ContextMenuManager ContextMenuManager { get; init; }
+  private WatchedAchievement _ach;
+  private WatchedAchievement _ach2;
 
-    public Plugin(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] ICommandManager commandManager,
-        [RequiredVersion("1.0")] ITextureProvider textureProvider,
-        [RequiredVersion("1.0")] IContextMenu contextMenu,
-        [RequiredVersion("1.0")] IFramework framework)
+  public Plugin(
+      [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
+      [RequiredVersion("1.0")] ICommandManager commandManager,
+      [RequiredVersion("1.0")] ITextureProvider textureProvider,
+      [RequiredVersion("1.0")] IContextMenu contextMenu,
+      [RequiredVersion("1.0")] IFramework framework)
+  {
+    PluginInterface = pluginInterface;
+    CommandManager = commandManager;
+
+    Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+    Configuration.Initialize(PluginInterface);
+
+    // you might normally want to embed resources and load them from the manifest stream
+    var file = new FileInfo(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png"));
+
+    // ITextureProvider takes care of the image caching and dispose
+    var goatImage = textureProvider.GetTextureFromFile(file);
+
+    ConfigWindow = new ConfigWindow(this);
+    MainWindow = new MainWindow(this, goatImage);
+
+    WindowSystem.AddWindow(ConfigWindow);
+    WindowSystem.AddWindow(MainWindow);
+
+    CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
     {
-        PluginInterface = pluginInterface;
-        CommandManager = commandManager;
+      HelpMessage = "A useful message to display in /xlhelp"
+    });
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Configuration.Initialize(PluginInterface);
+    PluginInterface.UiBuilder.Draw += DrawUI;
 
-        // you might normally want to embed resources and load them from the manifest stream
-        var file = new FileInfo(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png"));
+    // This adds a button to the plugin installer entry of this plugin which allows
+    // to toggle the display status of the configuration ui
+    PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
 
-        // ITextureProvider takes care of the image caching and dispose
-        var goatImage = textureProvider.GetTextureFromFile(file);
+    // Adds another button that is doing the same but for the main ui of the plugin
+    PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
 
-        ConfigWindow = new ConfigWindow(this);
-        MainWindow = new MainWindow(this, goatImage);
+    ECommonsMain.Init(pluginInterface, this);
+    ContextMenuManager = new ContextMenuManager(contextMenu);
+    _ach = new WatchedAchievement(1354);
+    _ach.Trigger = new FateTrigger();
 
-        WindowSystem.AddWindow(ConfigWindow);
-        WindowSystem.AddWindow(MainWindow);
+    _ach2 = new WatchedAchievement(982);
+    _ach2.Trigger = new MarkKilledTrigger();
+  }
 
-        CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
-        {
-            HelpMessage = "A useful message to display in /xlhelp"
-        });
+  public void Dispose()
+  {
+    WindowSystem.RemoveAllWindows();
 
-        PluginInterface.UiBuilder.Draw += DrawUI;
+    ConfigWindow.Dispose();
+    MainWindow.Dispose();
 
-        // This adds a button to the plugin installer entry of this plugin which allows
-        // to toggle the display status of the configuration ui
-        PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
+    CommandManager.RemoveHandler(CommandName);
+    ECommonsMain.Dispose();
+  }
 
-        // Adds another button that is doing the same but for the main ui of the plugin
-        PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+  private void OnCommand(string command, string args)
+  {
+    // in response to the slash command, just toggle the display status of our main ui
+    ToggleMainUI();
+  }
 
-        ECommonsMain.Init(pluginInterface, this);
-        ContextMenuManager = new ContextMenuManager(contextMenu);
-        _ach = new WatchedAchievement(1354);
-        _ach.Trigger = new FateTrigger();
-    }
+  private void DrawUI() => WindowSystem.Draw();
 
-    public void Dispose()
-    {
-        WindowSystem.RemoveAllWindows();
-
-        ConfigWindow.Dispose();
-        MainWindow.Dispose();
-
-        CommandManager.RemoveHandler(CommandName);
-    }
-
-    private void OnCommand(string command, string args)
-    {
-        // in response to the slash command, just toggle the display status of our main ui
-        ToggleMainUI();
-    }
-
-    private void DrawUI() => WindowSystem.Draw();
-
-    public void ToggleConfigUI() => ConfigWindow.Toggle();
-    public void ToggleMainUI() => MainWindow.Toggle();
+  public void ToggleConfigUI() => ConfigWindow.Toggle();
+  public void ToggleMainUI() => MainWindow.Toggle();
 }
