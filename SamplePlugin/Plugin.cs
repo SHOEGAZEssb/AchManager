@@ -1,12 +1,14 @@
-﻿using Dalamud.Game.Command;
+using AchManager.Windows;
+using Dalamud.Game.Command;
+using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using System.IO;
-using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using SamplePlugin.Windows;
+using ECommons;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using System.IO;
 
-namespace SamplePlugin;
+namespace AchManager;
 
 public sealed class Plugin : IDalamudPlugin
 {
@@ -16,14 +18,19 @@ public sealed class Plugin : IDalamudPlugin
     private ICommandManager CommandManager { get; init; }
     public Configuration Configuration { get; init; }
 
-    public readonly WindowSystem WindowSystem = new("SamplePlugin");
+    public readonly WindowSystem WindowSystem = new("AchManager");
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
+
+    private ContextMenuManager ContextMenuManager { get; init; }
+    private WatchedAchievement _ach;
 
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
         [RequiredVersion("1.0")] ICommandManager commandManager,
-        [RequiredVersion("1.0")] ITextureProvider textureProvider)
+        [RequiredVersion("1.0")] ITextureProvider textureProvider,
+        [RequiredVersion("1.0")] IContextMenu contextMenu,
+        [RequiredVersion("1.0")] IFramework framework)
     {
         PluginInterface = pluginInterface;
         CommandManager = commandManager;
@@ -56,6 +63,11 @@ public sealed class Plugin : IDalamudPlugin
 
         // Adds another button that is doing the same but for the main ui of the plugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+
+        ECommonsMain.Init(pluginInterface, this);
+        ContextMenuManager = new ContextMenuManager(contextMenu);
+        _ach = new WatchedAchievement(1354);
+        _ach.Trigger = new FateTrigger();
     }
 
     public void Dispose()
