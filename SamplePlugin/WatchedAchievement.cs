@@ -3,11 +3,7 @@ using ECommons.DalamudServices;
 using ECommons.EzHookManager;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AchManager
 {
@@ -37,30 +33,31 @@ namespace AchManager
 
     public uint Progress { get; private set; }
 
-    private readonly uint watchedID;
-    private readonly Lumina.Excel.GeneratedSheets.Achievement achievementInfo;
+    public uint WatchedID { get; private set; }
+    private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
 
-    public WatchedAchievement(uint id)
+    public WatchedAchievement(uint id, AchievementUpdateTrigger? trigger)
     {
-      watchedID = id;
-      achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>().FirstOrDefault(a => a.RowId == watchedID);
+      WatchedID = id;
+      Trigger = trigger;
+      _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);
       ReceiveAchievementProgressHook = new EzHook<ReceiveAchievementProgressDelegate>(Achievement.Addresses.ReceiveAchievementProgress.String, ReceiveAchievementProgressDetour);
       ReceiveAchievementProgressHook.Enable();
     }
 
     private void Trigger_OnTrigger(object? sender, EventArgs e)
     {
-      Achievement.Instance()->RequestAchievementProgress(watchedID);
+      Achievement.Instance()->RequestAchievementProgress(WatchedID);
     }
 
     private void ReceiveAchievementProgressDetour(Achievement* achievement, uint id, uint current, uint max)
     {
-      if (id == watchedID)
+      if (id == WatchedID)
       {
         if (Progress != current)
         {
           Svc.Log.Debug($"Achievement progress: {current}/{max}");
-          Svc.Chat.Print($"Achievement '{achievementInfo.Name}' Progress: {current}/{max}");
+          Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {current}/{max}");
         }
 
         Progress = current;

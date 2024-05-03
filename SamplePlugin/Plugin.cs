@@ -25,19 +25,16 @@ public sealed class Plugin : IDalamudPlugin
   private ConfigWindow ConfigWindow { get; init; }
   private MainWindow MainWindow { get; init; }
 
-  private ContextMenuManager ContextMenuManager { get; init; }
-  private WatchedAchievement _ach;
-  private WatchedAchievement _ach2;
-
   public Plugin(
       [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
       [RequiredVersion("1.0")] ICommandManager commandManager,
       [RequiredVersion("1.0")] ITextureProvider textureProvider,
-      [RequiredVersion("1.0")] IContextMenu contextMenu,
       [RequiredVersion("1.0")] IFramework framework)
   {
     PluginInterface = pluginInterface;
     CommandManager = commandManager;
+
+    ECommonsMain.Init(pluginInterface, this);
 
     Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
     Configuration.Initialize(PluginInterface);
@@ -67,14 +64,6 @@ public sealed class Plugin : IDalamudPlugin
 
     // Adds another button that is doing the same but for the main ui of the plugin
     PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
-
-    ECommonsMain.Init(pluginInterface, this);
-    ContextMenuManager = new ContextMenuManager(contextMenu);
-    _ach = new WatchedAchievement(1354);
-    _ach.Trigger = new FateTrigger();
-
-    _ach2 = new WatchedAchievement(982);
-    _ach2.Trigger = new MarkKilledTrigger();
   }
 
   public void Dispose()

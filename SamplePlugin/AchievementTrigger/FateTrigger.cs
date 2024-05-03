@@ -7,7 +7,7 @@ namespace AchManager.AchievementTrigger
 
   internal unsafe class FateTrigger : AchievementUpdateTrigger
   {
-    private FateContext* lastFate;
+    private FateContext* _lastFate;
 
     public FateTrigger()
     {
@@ -23,10 +23,10 @@ namespace AchManager.AchievementTrigger
         currentFate = fm->CurrentFate;
       }
 
-      if (lastFate != currentFate)
+      if (_lastFate != currentFate)
         FateChanged(currentFate);
 
-      lastFate = currentFate;
+      _lastFate = currentFate;
     }
 
     private void FateChanged(FateContext* newFate)
