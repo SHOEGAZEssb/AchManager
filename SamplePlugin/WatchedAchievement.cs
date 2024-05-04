@@ -4,14 +4,12 @@ using ECommons.EzHookManager;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
 using System.Linq;
+using static Dalamud.Interface.Utility.Raii.ImRaii;
 
 namespace AchManager
 {
   internal unsafe class WatchedAchievement : IDisposable
   {
-    public delegate void ReceiveAchievementProgressDelegate(Achievement* achievement, uint id, uint current, uint max);
-    public EzHook<ReceiveAchievementProgressDelegate> ReceiveAchievementProgressHook;
-
     public AchievementUpdateTriggerBase? Trigger
     {
       get => trigger;
@@ -41,36 +39,34 @@ namespace AchManager
 
     public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
+      AchievementHookManager.OnAchievementProgress += AchievementHookManager_OnAchievementProgress;
       WatchedID = id;
       Trigger = trigger;
       _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);
-      ReceiveAchievementProgressHook = new EzHook<ReceiveAchievementProgressDelegate>(Achievement.Addresses.ReceiveAchievementProgress.String, ReceiveAchievementProgressDetour);
-      ReceiveAchievementProgressHook.Enable();
+
+    }
+
+    private void AchievementHookManager_OnAchievementProgress(object? sender, AchievementProgressEventArgs e)
+    {
+      if (e.ID == WatchedID)
+      {
+        if (Progress != e.Progress)
+        {
+          Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
+        }
+
+        Progress = e.Progress;
+      }
     }
 
     private void Trigger_OnTrigger(object? sender, EventArgs e)
     {
-      Achievement.Instance()->RequestAchievementProgress(WatchedID);
-    }
-
-    private void ReceiveAchievementProgressDetour(Achievement* achievement, uint id, uint current, uint max)
-    {
-      if (id == WatchedID)
-      {
-        if (Progress != current)
-        {
-          Svc.Log.Debug($"Achievement progress: {current}/{max}");
-          Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {current}/{max}");
-        }
-
-        Progress = current;
-      }
-      ReceiveAchievementProgressHook.Original(achievement, id, current, max);
+      AchievementHookManager.RequestProgess(WatchedID);
     }
 
     public void Dispose()
     {
-      ReceiveAchievementProgressHook.Disable();
+      AchievementHookManager.OnAchievementProgress -= AchievementHookManager_OnAchievementProgress;
       Trigger?.Dispose();
       Trigger = null;
     }
