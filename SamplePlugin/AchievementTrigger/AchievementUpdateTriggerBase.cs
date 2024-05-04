@@ -23,6 +23,11 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     public abstract string TriggerIdentifier { get; }
 
+    /// <summary>
+    /// Safety bool to stop double initialization.
+    /// </summary>
+    protected bool _isInitialized;
+
     #endregion Properties
 
     #region Construction
@@ -39,12 +44,6 @@ namespace AchManager.AchievementTrigger
     protected void FireOnTrigger()
     {
       OnTrigger?.Invoke(this, EventArgs.Empty);
-    }
-
-    [OnDeserialized]
-    protected virtual void OnDeserialized()
-    {
-      Init();
     }
 
     protected abstract void Init();

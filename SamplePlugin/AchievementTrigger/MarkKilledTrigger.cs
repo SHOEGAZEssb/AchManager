@@ -32,7 +32,11 @@ namespace AchManager.AchievementTrigger
 
     protected override void Init()
     {
+      if (_isInitialized)
+        return;
+
       MarkKilledEventManager.Instance.OnEvent += Instance_OnTrigger;
+      _isInitialized = true;
     }
 
     private void Instance_OnTrigger(object? sender, MarkKilledEventArgs e)
