@@ -94,7 +94,7 @@ public class Configuration : IPluginConfiguration
     {
       var file = Path.Combine(PluginInterface!.ConfigDirectory.FullName, "AchManagerWA.json");
       if (File.Exists(file))
-        WatchedAchievements = JsonConvert.DeserializeObject<Dictionary<uint, AchievementUpdateTriggerBase?>>(File.ReadAllText(file));
+        WatchedAchievements = JsonConvert.DeserializeObject<Dictionary<uint, AchievementUpdateTriggerBase?>>(File.ReadAllText(file)) ?? [];
     }
     catch (Exception ex)
     {

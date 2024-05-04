@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace AchManager
 {
-  internal unsafe class WatchedAchievement
+  internal unsafe class WatchedAchievement : IDisposable
   {
     public delegate void ReceiveAchievementProgressDelegate(Achievement* achievement, uint id, uint current, uint max);
     public EzHook<ReceiveAchievementProgressDelegate> ReceiveAchievementProgressHook;
@@ -20,7 +20,10 @@ namespace AchManager
         if (trigger != value)
         {
           if (trigger != null)
+          {
             trigger.OnTrigger -= Trigger_OnTrigger;
+            trigger.Dispose();
+          }
 
           if (value != null)
             value.OnTrigger += Trigger_OnTrigger;
@@ -63,6 +66,13 @@ namespace AchManager
         Progress = current;
       }
       ReceiveAchievementProgressHook.Original(achievement, id, current, max);
+    }
+
+    public void Dispose()
+    {
+      ReceiveAchievementProgressHook.Disable();
+      Trigger?.Dispose();
+      Trigger = null;
     }
   }
 }

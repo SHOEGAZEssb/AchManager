@@ -10,11 +10,11 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace AchManager.Windows;
 
-public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###With a constant ID"), IDisposable
+public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###With a constant ID")
 {
   private readonly Configuration Configuration = plugin.Configuration;
-  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>().Skip(1);
-  private IEnumerable<Achievement>? _filteredAllAchievements;
+  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1) ?? [];
+  private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
 
   private static readonly string[] _triggerTypeStrings = GetTriggerTypeStrings();
@@ -24,8 +24,6 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
                     | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
                     | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
                     | ImGuiTableFlags.SizingFixedFit;
-
-  public void Dispose() { }
 
   public override void Draw()
   {
@@ -78,7 +76,7 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
         ImGui.Text(ach.Description);
 
         ImGui.TableNextColumn();
-        ImGui.Text(ach.AchievementCategory.Value.AchievementKind.Value.Name);
+        ImGui.Text(ach.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
 
         ImGui.TableNextColumn();
         bool watched = Configuration.WatchedAchievements.ContainsKey(ach.RowId);
@@ -121,7 +119,7 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
         ImGui.Text(achInfo.Description);
 
         ImGui.TableNextColumn();
-        ImGui.Text(achInfo.AchievementCategory.Value.AchievementKind.Value.Name);
+        ImGui.Text(achInfo.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
 
         ImGui.TableNextColumn();
         int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Value));
@@ -160,7 +158,7 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
     var enumValues = Enum.GetValues(typeof(TriggerType));
     var strings = new string[enumValues.Length];
     for (int i = 0; i < enumValues.Length; i++)
-      strings[i] = enumValues.GetValue(i).ToString();
+      strings[i] = enumValues.GetValue(i)?.ToString() ?? string.Empty;
 
     return strings;
   }

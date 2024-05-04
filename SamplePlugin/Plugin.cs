@@ -65,9 +65,6 @@ public sealed class Plugin : IDalamudPlugin
   {
     WindowSystem.RemoveAllWindows();
 
-    ConfigWindow.Dispose();
-    MainWindow.Dispose();
-
     CommandManager.RemoveHandler(CommandName);
     ECommonsMain.Dispose();
   }

@@ -1,6 +1,7 @@
 using JsonSubTypes;
 using Newtonsoft.Json;
 using System;
+using System.Runtime.Serialization;
 
 namespace AchManager.AchievementTrigger
 {
@@ -12,11 +13,26 @@ namespace AchManager.AchievementTrigger
   {
     #region Properties
 
+    /// <summary>
+    /// Event that is fired when this trigger triggers.
+    /// </summary>
     public event EventHandler? OnTrigger;
 
+    /// <summary>
+    /// Identifier of this trigger for deserializing.
+    /// </summary>
     public abstract string TriggerIdentifier { get; }
 
     #endregion Properties
+
+    #region Construction
+
+    protected AchievementUpdateTriggerBase()
+    {
+      Init();
+    }
+
+    #endregion Construction
 
     public abstract void Dispose();
 
@@ -24,5 +40,13 @@ namespace AchManager.AchievementTrigger
     {
       OnTrigger?.Invoke(this, EventArgs.Empty);
     }
+
+    [OnDeserialized]
+    protected virtual void OnDeserialized()
+    {
+      Init();
+    }
+
+    protected abstract void Init();
   }
 }

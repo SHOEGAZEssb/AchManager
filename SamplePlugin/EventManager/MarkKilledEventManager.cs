@@ -5,10 +5,16 @@ using System.Linq;
 
 namespace AchManager.EventManager
 {
+  /// <summary>
+  /// Event manager for when marks are killed.
+  /// </summary>
   internal class MarkKilledEventManager : AchievementUpdateEventManagerBase<MarkKilledEventArgs>
   {
     #region Singleton
 
+    /// <summary>
+    /// The unique instance of this event manager.
+    /// </summary>
     public static MarkKilledEventManager Instance
     {
       get
@@ -21,6 +27,9 @@ namespace AchManager.EventManager
 
     #endregion Singleton
 
+    /// <summary>
+    /// Cache for fetched notorious monsters from excel.
+    /// </summary>
     private static readonly Dictionary<uint, NotoriousMonster?> _notoriousMonstersCache = [];
 
     private MarkKilledEventManager()
@@ -44,12 +53,20 @@ namespace AchManager.EventManager
       }
     }
 
-    private NotoriousMonster? GetNotoriousMonster(uint dataId)
+    /// <summary>
+    /// Gets the <see cref="NotoriousMonster"/> with the given
+    /// <paramref name="dataId"/> from excel or from the <see cref="_notoriousMonstersCache"/>.
+    /// </summary>
+    /// <param name="dataId">ID of the <see cref="NotoriousMonster"/> to get.</param>
+    /// <returns>The <see cref="NotoriousMonster"/>.
+    /// Null if no <see cref="NotoriousMonster"/> for the given
+    /// <paramref name="dataId"/> exists.</returns>
+    private static NotoriousMonster? GetNotoriousMonster(uint dataId)
     {
-      if (_notoriousMonstersCache.TryGetValue(dataId, out var nm)) return nm;
+      if (_notoriousMonstersCache.TryGetValue(dataId, out var nm))
+        return nm;
 
       var monster = Svc.Data.GetExcelSheet<NotoriousMonster>()?.FirstOrDefault(n => n.BNpcBase.Row == dataId);
-
       _notoriousMonstersCache[dataId] = monster;
 
       return monster;

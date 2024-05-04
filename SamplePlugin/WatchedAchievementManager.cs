@@ -20,8 +20,8 @@ namespace AchManager
     public void RemoveWatchedAchievement(uint id)
     {
       var ach = _achievements.FirstOrDefault(a => a.WatchedID == id) ?? throw new ArgumentException($"Can't remove watched achievement: Achievement with id {id} is not being watched");
-      ach.Trigger = null; // todo: dispose?
       _achievements.Remove(ach);
+      ach.Dispose();
     }
 
     public void SetTriggerTypeForWatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
