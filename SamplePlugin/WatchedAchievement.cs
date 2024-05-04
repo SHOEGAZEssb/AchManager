@@ -12,7 +12,7 @@ namespace AchManager
     public delegate void ReceiveAchievementProgressDelegate(Achievement* achievement, uint id, uint current, uint max);
     public EzHook<ReceiveAchievementProgressDelegate> ReceiveAchievementProgressHook;
 
-    public AchievementUpdateTrigger? Trigger
+    public AchievementUpdateTriggerBase? Trigger
     {
       get => trigger;
       set
@@ -29,14 +29,14 @@ namespace AchManager
         }
       }
     }
-    private AchievementUpdateTrigger? trigger;
+    private AchievementUpdateTriggerBase? trigger;
 
     public uint Progress { get; private set; }
 
     public uint WatchedID { get; private set; }
     private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
 
-    public WatchedAchievement(uint id, AchievementUpdateTrigger? trigger)
+    public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
       WatchedID = id;
       Trigger = trigger;

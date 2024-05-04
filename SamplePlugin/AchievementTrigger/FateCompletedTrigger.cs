@@ -4,22 +4,22 @@ using System;
 namespace AchManager.AchievementTrigger
 {
   [Serializable]
-  public class DutyCompletedTrigger : AchievementUpdateTriggerBase
+  public class FateCompletedTrigger : AchievementUpdateTriggerBase
   {
-    public override string TriggerIdentifier => nameof(DutyCompletedTrigger);
+    public override string TriggerIdentifier => nameof(FateCompletedTrigger);
 
     #region Construction
 
-    public DutyCompletedTrigger()
+    public FateCompletedTrigger()
     {
-      DutyCompletedEventManager.Instance.OnEvent += Instance_OnTrigger;
+      FateCompletedEventManager.Instance.OnEvent += Instance_OnTrigger;
     }
 
     #endregion Construction
 
     public override void Dispose()
     {
-      DutyCompletedEventManager.Instance.OnEvent -= Instance_OnTrigger;
+      FateCompletedEventManager.Instance.OnEvent -= Instance_OnTrigger;
     }
 
     private void Instance_OnTrigger(object? sender, EventArgs e)

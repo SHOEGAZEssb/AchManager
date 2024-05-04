@@ -1,4 +1,3 @@
-using AchManager.AchievementTrigger;
 using AchManager.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -6,9 +5,6 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
-using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.IO;
 
 namespace AchManager;
@@ -28,8 +24,7 @@ public sealed class Plugin : IDalamudPlugin
   public Plugin(
       [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
       [RequiredVersion("1.0")] ICommandManager commandManager,
-      [RequiredVersion("1.0")] ITextureProvider textureProvider,
-      [RequiredVersion("1.0")] IFramework framework)
+      [RequiredVersion("1.0")] ITextureProvider textureProvider)
   {
     PluginInterface = pluginInterface;
     CommandManager = commandManager;

@@ -1,47 +1,37 @@
-using ECommons.DalamudServices;
-using Lumina.Excel.GeneratedSheets;
+﻿using AchManager.EventManager;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AchManager.AchievementTrigger
 {
-  internal class MarkKilledTrigger : AchievementUpdateTrigger
+  [Serializable]
+  public class MarkKilledTrigger : AchievementUpdateTriggerBase
   {
-    private readonly Dictionary<uint, NotoriousMonster?> _notoriousMonstersCache = [];
+    public override string TriggerIdentifier => nameof(MarkKilledTrigger);
+
+    #region Properties
+
+    public MarkKilledTriggerConfig Config { get; } = new MarkKilledTriggerConfig();
+
+    #endregion Properties
+
+    #region Construction
 
     public MarkKilledTrigger()
     {
-      Svc.Framework.Update += Framework_Update;
+      MarkKilledEventManager.Instance.OnEvent += Instance_OnTrigger;
     }
 
-    private void Framework_Update(Dalamud.Plugin.Services.IFramework framework)
+    #endregion Construction
+
+    public override void Dispose()
     {
-      // check if previous target is dead
-      var prevTarget = Svc.Targets.PreviousTarget;
-      if (prevTarget != null && prevTarget.IsDead)
-      {
-        // check if target was a mark
-        if (prevTarget.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc) 
-        {
-          var nm = GetNotoriousMonster(prevTarget.DataId);
-          if (nm != null)
-            FireOnTrigger();
-        }
-      }
+      MarkKilledEventManager.Instance.OnEvent -= Instance_OnTrigger;
     }
 
-    private NotoriousMonster? GetNotoriousMonster(uint dataId)
+    private void Instance_OnTrigger(object? sender, MarkKilledEventArgs e)
     {
-      if (_notoriousMonstersCache.TryGetValue(dataId, out var nm)) return nm;
-
-      var monster = Svc.Data.GetExcelSheet<NotoriousMonster>()?.FirstOrDefault(n => n.BNpcBase.Row == dataId);
-
-      _notoriousMonstersCache[dataId] = monster;
-
-      return monster;
+      if (Config.RequiredRank == Rank.All || e.Rank.ToString() == Config.RequiredRank.ToString())
+        FireOnTrigger();
     }
   }
 }

@@ -1,15 +1,30 @@
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using System;
 
-namespace AchManager.AchievementTrigger
+namespace AchManager.EventManager
 {
 
-  internal unsafe class FateTrigger : AchievementUpdateTrigger
+  internal unsafe class FateCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
   {
+    #region Singleton
+
+    public static FateCompletedEventManager Instance
+    {
+      get
+      {
+        _instance ??= new FateCompletedEventManager();
+        return _instance;
+      }
+    }
+    private static FateCompletedEventManager? _instance;
+
+    #endregion Singleton
+
     private FateContext* _lastFate;
 
-    public FateTrigger()
+    public FateCompletedEventManager()
     {
       Svc.Framework.Update += Framework_Update;
     }
@@ -36,7 +51,7 @@ namespace AchManager.AchievementTrigger
         Svc.Log.Debug($"Fate changed to {newFate->Name}");
       }
       else
-        FireOnTrigger();
+        FireOnEvent(EventArgs.Empty);
       Svc.Log.Debug($"Fate changed to null");
     }
   }
