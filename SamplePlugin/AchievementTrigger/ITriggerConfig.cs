@@ -3,6 +3,6 @@
   /// <summary>
   /// Grouping interface for triggers.
   /// </summary>
-  internal interface ITriggerConfig
+  public interface ITriggerConfig
   { }
 }

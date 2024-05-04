@@ -40,7 +40,7 @@ public sealed class Plugin : IDalamudPlugin
     // ITextureProvider takes care of the image caching and dispose
     var goatImage = textureProvider.GetTextureFromFile(file);
 
-    ConfigWindow = new ConfigWindow(this);
+    ConfigWindow = new ConfigWindow(this, WindowSystem);
     MainWindow = new MainWindow(this, goatImage);
 
     WindowSystem.AddWindow(ConfigWindow);

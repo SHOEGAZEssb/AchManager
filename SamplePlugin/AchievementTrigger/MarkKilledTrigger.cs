@@ -1,5 +1,6 @@
 ﻿using AchManager.EventManager;
 using System;
+using System.Security.AccessControl;
 
 namespace AchManager.AchievementTrigger
 {
@@ -7,16 +8,19 @@ namespace AchManager.AchievementTrigger
   /// Trigger that fires when a mark is killed.
   /// </summary>
   [Serializable]
-  public class MarkKilledTrigger : AchievementUpdateTriggerBase
+  public class MarkKilledTrigger : AchievementUpdateTriggerBase, IConfigurableTrigger
   {
     public override string TriggerIdentifier => nameof(MarkKilledTrigger);
 
     #region Properties
 
+    public ITriggerConfig Config => TypedConfig;
+    
+
     /// <summary>
     /// Configuration for this trigger.
     /// </summary>
-    public MarkKilledTriggerConfig Config { get; } = new MarkKilledTriggerConfig();
+    public MarkKilledTriggerConfig TypedConfig { get; } = new MarkKilledTriggerConfig();
 
     #endregion Properties
 
@@ -41,7 +45,7 @@ namespace AchManager.AchievementTrigger
 
     private void Instance_OnTrigger(object? sender, MarkKilledEventArgs e)
     {
-      if (Config.RequiredRank == Rank.All || e.Rank.ToString() == Config.RequiredRank.ToString())
+      if (TypedConfig.RequiredRank == Rank.All || e.Rank.ToString() == TypedConfig.RequiredRank.ToString())
         FireOnTrigger();
     }
   }

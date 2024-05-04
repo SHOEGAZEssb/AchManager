@@ -10,8 +10,10 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace AchManager.Windows;
 
-public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###With a constant ID")
+public class ConfigWindow(Plugin plugin, WindowSystem windowSystem)
+  : Window("AchManager Configuration###With a constant ID")
 {
+  private readonly WindowSystem _windowSystem = windowSystem;
   private readonly Configuration Configuration = plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1) ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
@@ -24,6 +26,8 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
                     | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
                     | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
                     | ImGuiTableFlags.SizingFixedFit;
+
+  private ConfigWindowBase? _currentConfigWindow;
 
   public override void Draw()
   {
@@ -94,12 +98,13 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
 
   private void DrawWatchedAchievementList()
   {
-    if (ImGui.BeginTable("##watchedAchievementsTable", 5, _tableFlags))
+    if (ImGui.BeginTable("##watchedAchievementsTable", 6, _tableFlags))
     {
       ImGui.TableSetupColumn("Ach Name");
       ImGui.TableSetupColumn("Ach Description");
       ImGui.TableSetupColumn("Ach Category");
       ImGui.TableSetupColumn("Update Trigger");
+      ImGui.TableSetupColumn("Config");
       ImGui.TableSetupColumn("Remove");
       ImGui.TableHeadersRow();
 
@@ -125,6 +130,17 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
         if (ImGui.Combo($"##ach_{ach.Key}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
         {
           Configuration.ChangeTriggerTypeForAchievement(ach.Key, (TriggerType)Enum.Parse(typeof(TriggerType), _triggerTypeStrings[index]));
+        }
+
+        ImGui.TableNextColumn();
+        if (ach.Value is IConfigurableTrigger t && ImGui.Button($"Config##ach_{ach.Key}_openConfig"))
+        {
+          if (_currentConfigWindow != null)
+            _windowSystem.RemoveWindow(_currentConfigWindow);
+
+          _currentConfigWindow = GetConfigWindowForTrigger(t, Configuration);
+          _windowSystem.AddWindow(_currentConfigWindow);
+          _currentConfigWindow.Toggle();
         }
 
         ImGui.TableNextColumn();
@@ -160,5 +176,13 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
       strings[i] = enumValues.GetValue(i)?.ToString() ?? string.Empty;
 
     return strings;
+  }
+
+  private static ConfigWindowBase GetConfigWindowForTrigger(IConfigurableTrigger trigger, Configuration pluginConfig)
+  {
+    if (trigger.Config is MarkKilledTriggerConfig c)
+      return new MarkKilledTriggerConfigWindow(c, pluginConfig, "Mark Killed Trigger Config");
+    else
+      throw new NotImplementedException($"No config window for config type {trigger.Config.GetType().Name}");
   }
 }
