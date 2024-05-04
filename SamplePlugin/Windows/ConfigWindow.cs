@@ -49,9 +49,8 @@ public class ConfigWindow(Plugin plugin) : Window("AchManager Configuration###Wi
     ImGui.SameLine();
     if (ImGui.InputText("##allAchievementsSearchText", ref _allAchievementsSearchText, 128))
     {
-      var searchTextToLower = _allAchievementsSearchText.ToLower();
-      _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.ToLower().Contains(searchTextToLower) ||
-                                                             a.Description.RawString.ToLower().Contains(searchTextToLower));
+      _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                                                             a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
     }
 
     if (string.IsNullOrEmpty(_allAchievementsSearchText))

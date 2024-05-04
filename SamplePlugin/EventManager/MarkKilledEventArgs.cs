@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AchManager.EventManager
 {
@@ -7,7 +8,7 @@ namespace AchManager.EventManager
     C,
     B,
     A,
-    S
+    S,
   }
 
   internal class MarkKilledEventArgs(KilledEnemyRank rank) : EventArgs
@@ -16,6 +17,23 @@ namespace AchManager.EventManager
 
     public KilledEnemyRank Rank { get; } = rank;
 
+    private static readonly Dictionary<byte, KilledEnemyRank> _rankBytes = new()
+    {
+      { 0, KilledEnemyRank.C },
+      { 1, KilledEnemyRank.B },
+      { 2, KilledEnemyRank.A },
+      { 3, KilledEnemyRank.S },
+      { 4, KilledEnemyRank.S }
+    };
+
     #endregion Properties
+
+    #region Construction
+
+    public MarkKilledEventArgs(byte rank)
+      : this(_rankBytes[rank])
+    { }
+
+    #endregion Construction
   }
 }

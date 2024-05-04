@@ -48,7 +48,7 @@ namespace AchManager.EventManager
         {
           var nm = GetNotoriousMonster(prevTarget.DataId);
           if (nm != null)
-            FireOnEvent(null);
+            FireOnEvent(new MarkKilledEventArgs(nm.Rank));
         }
       }
     }
