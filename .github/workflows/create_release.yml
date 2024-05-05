@@ -16,6 +16,6 @@ jobs:
       internal_name: AchManager
       solution_name: AchManager
       build_configuration: Release
-      personal_plugin_repo: SHOEGAZEssb/AchManager
+      personal_plugin_repo: SHOEGAZEssb/DalamudPluginRepo
       personal_plugin_repo_branch: master
     secrets: inherit
