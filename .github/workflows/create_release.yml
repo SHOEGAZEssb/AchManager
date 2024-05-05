@@ -1,6 +1,7 @@
 name: Create Release and Update Repository
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
