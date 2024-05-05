@@ -190,6 +190,8 @@ public class ConfigWindow(WindowSystem windowSystem)
       return TriggerType.FateCompleted.ToString();
     else if (trigger is MarkKilledTrigger)
       return TriggerType.MarkKilled.ToString();
+    else if (trigger is ChatMessageTrigger)
+      return TriggerType.ChatMessage.ToString();
     else
       throw new ArgumentException("unknown trigger type");
   }
@@ -206,8 +208,10 @@ public class ConfigWindow(WindowSystem windowSystem)
 
   private static ConfigWindowBase GetConfigWindowForTrigger(IConfigurableTrigger trigger, Configuration pluginConfig)
   {
-    if (trigger.Config is MarkKilledTriggerConfig c)
-      return new MarkKilledTriggerConfigWindow(c, pluginConfig, "Mark Killed Trigger Config");
+    if (trigger.Config is MarkKilledTriggerConfig mktc)
+      return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
+    else if (trigger.Config is ChatMessageTriggerConfig cmtc)
+      return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
     else
       throw new NotImplementedException($"No config window for config type {trigger.Config.GetType().Name}");
   }

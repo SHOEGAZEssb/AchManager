@@ -10,12 +10,11 @@ namespace AchManager.AchievementTrigger
   [Serializable]
   public class MarkKilledTrigger : AchievementUpdateTriggerBase, IConfigurableTrigger
   {
-    public override string TriggerIdentifier => nameof(MarkKilledTrigger);
-
     #region Properties
 
-    public ITriggerConfig Config => TypedConfig;
-    
+    public override string TriggerIdentifier => nameof(MarkKilledTrigger);
+
+    public ITriggerConfig Config => TypedConfig;    
 
     /// <summary>
     /// Configuration for this trigger.

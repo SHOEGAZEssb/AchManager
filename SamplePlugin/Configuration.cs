@@ -71,6 +71,7 @@ public class Configuration : IPluginConfiguration
     { TriggerType.DutyCompleted, typeof(DutyCompletedTrigger) },
     { TriggerType.FateCompleted, typeof(FateCompletedTrigger) },
     { TriggerType.MarkKilled, typeof(MarkKilledTrigger) },
+    { TriggerType.ChatMessage, typeof(ChatMessageTrigger) },
     { TriggerType.None, null }
   };
 

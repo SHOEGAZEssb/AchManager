@@ -22,7 +22,7 @@ namespace AchManager.EventManager
 
     #endregion Singleton
 
-    public DutyCompletedEventManager()
+    private DutyCompletedEventManager()
     {
       Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
     }

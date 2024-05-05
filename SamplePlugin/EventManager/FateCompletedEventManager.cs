@@ -24,7 +24,7 @@ namespace AchManager.EventManager
 
     private FateContext* _lastFate;
 
-    public FateCompletedEventManager()
+    private FateCompletedEventManager()
     {
       Svc.Framework.Update += Framework_Update;
     }
