@@ -30,7 +30,7 @@ namespace AchManager
     }
     private AchievementUpdateTriggerBase? trigger;
 
-    public uint Progress { get; private set; }
+    public uint? Progress { get; private set; }
 
     public uint WatchedID { get; private set; }
     private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
@@ -43,6 +43,9 @@ namespace AchManager
       WatchedID = id;
       Trigger = trigger;
       _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);
+
+      // get initial progress
+      AchievementHookManager.RequestProgess(WatchedID);
     }
 
     private void AchievementHookManager_OnAchievementProgress(object? sender, AchievementProgressEventArgs e)
@@ -51,23 +54,26 @@ namespace AchManager
       {
         if (Progress != e.Progress)
         {
-          if (Plugin.Configuration.ShowChatMessage)
-            Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
-
-          if (Plugin.Configuration.ShowNotification)
+          if (Progress != null)
           {
-            var notif = new Notification
-            {
-              InitialDuration = TimeSpan.FromSeconds(3),
-              Title = _achievementInfo?.Name ?? string.Empty,
-              Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
-              Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
-              Progress = e.Progress / e.ProgressMax,
-              IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo.Icon)
-            };
+            if (Plugin.Configuration.ShowChatMessage)
+              Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
 
-            _lastNotification = Svc.NotificationManager.AddNotification(notif);
-            _lastNotification.Dismiss += LastNotification_Dismiss;
+            if (Plugin.Configuration.ShowNotification)
+            {
+              var notif = new Notification
+              {
+                InitialDuration = TimeSpan.FromSeconds(3),
+                Title = _achievementInfo?.Name ?? string.Empty,
+                Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
+                Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
+                Progress = e.Progress / e.ProgressMax,
+                IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo.Icon)
+              };
+
+              _lastNotification = Svc.NotificationManager.AddNotification(notif);
+              _lastNotification.Dismiss += LastNotification_Dismiss;
+            }
           }
         }
 
