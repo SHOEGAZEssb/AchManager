@@ -1,0 +1,24 @@
+{
+  "Author": "SHOEGAZEssb",
+  "Name": "AchManager",
+  "InternalName": "AchManager",
+  "AssemblyVersion": "0.0.0.1",
+  "Description": "Lets you watch achievements that will be checked for progress when certain things happen.",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/SHOEGAZEssb/AchManager",
+  "Tags": [
+    "achievements"
+  ],
+  "DalamudApiLevel": 9,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "CanUnloadAsync": false,
+  "LoadPriority": 0,
+  "ImageUrls": [
+    ""
+  ],
+  "IconUrl": "",
+  "Punchline": "Get notifications for achievement progress!",
+  "Changelog": "",
+  "AcceptsFeedback": true
+}
