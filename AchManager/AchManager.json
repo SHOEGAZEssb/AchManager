@@ -1,12 +1,18 @@
 {
-  "Author": "your name here",
+  "Author": "SHOEGAZEssb",
   "Name": "AchManager",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "Punchline": "Get notifications for achievement progress!",
+  "Description": "Lets you watch achievements that will be checked for progress when certain things happen.",
   "ApplicableVersion": "any",
   "Tags": [
-    "sample",
-    "plugin",
-    "goats"
-  ]
+    "achievements"
+  ],
+  "RepoUrl": "https://github.com/SHOEGAZEssb/AchManager",
+  "InternalName": "AchManager",
+  "IconUrl": "",
+  "ImageUrls": [
+    ""
+  ],
+  "AssemblyVersion": "0.0.0.1",
+  "Changelog": ""
 }
