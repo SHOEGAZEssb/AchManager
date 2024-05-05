@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release:
-    uses: SHOEGAZEssb/DalamudPluginRepo/.github/workflows/reusable_create_release.yml@master
+    uses: SHOEGAZEssb/DalamudPluginRepo/.github/workflows/reusable_create_release.yml@main
     with:
       internal_name: AchManager
       solution_name: AchManager
