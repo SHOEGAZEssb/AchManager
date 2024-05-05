@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AchManager
 {
-  internal unsafe class WatchedAchievement : IDisposable
+  internal class WatchedAchievement : IDisposable
   {
     public AchievementUpdateTriggerBase? Trigger
     {
