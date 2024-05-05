@@ -10,11 +10,11 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace AchManager.Windows;
 
-public class ConfigWindow(Plugin plugin, WindowSystem windowSystem)
+public class ConfigWindow(WindowSystem windowSystem)
   : Window("AchManager Configuration###With a constant ID")
 {
   private readonly WindowSystem _windowSystem = windowSystem;
-  private readonly Configuration Configuration = plugin.Configuration;
+  private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1) ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
@@ -42,6 +42,12 @@ public class ConfigWindow(Plugin plugin, WindowSystem windowSystem)
       if (ImGui.BeginTabItem("Watched Achievements"))
       {
         DrawWatchedAchievementList();
+        ImGui.EndTabItem();
+      }
+
+      if (ImGui.BeginTabItem("General Config"))
+      {
+        DrawGeneralConfig();
         ImGui.EndTabItem();
       }
     }
@@ -151,6 +157,26 @@ public class ConfigWindow(Plugin plugin, WindowSystem windowSystem)
       }
 
       ImGui.EndTable();
+    }
+  }
+
+  private void DrawGeneralConfig()
+  {
+    if (ImGui.TreeNodeEx("##notificationConfig", ImGuiTreeNodeFlags.CollapsingHeader | ImGuiTreeNodeFlags.DefaultOpen, "Progress Notifications"))
+    {
+      ImGui.Indent();
+
+      ImGui.Text("Chat");
+      ImGui.SameLine();
+      var chat = Configuration.ShowChatMessage;
+      if (ImGui.Checkbox("##showChatMessage", ref chat))
+        Configuration.ShowChatMessage = chat;
+
+      ImGui.Text("Dalamud Notification");
+      ImGui.SameLine();
+      var notif = Configuration.ShowNotification;
+      if (ImGui.Checkbox("##showNotification", ref notif))
+        Configuration.ShowNotification = notif;
     }
   }
 

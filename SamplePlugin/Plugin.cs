@@ -11,11 +11,13 @@ namespace AchManager;
 
 public sealed class Plugin : IDalamudPlugin
 {
+  public static ITextureProvider TextureProvider { get; private set; }
+
   private const string CommandName = "/pmycommand";
 
   private DalamudPluginInterface PluginInterface { get; init; }
   private ICommandManager CommandManager { get; init; }
-  public Configuration Configuration { get; init; }
+  public static Configuration Configuration { get; private set; }
 
   public readonly WindowSystem WindowSystem = new("AchManager");
   private ConfigWindow ConfigWindow { get; init; }
@@ -28,6 +30,7 @@ public sealed class Plugin : IDalamudPlugin
   {
     PluginInterface = pluginInterface;
     CommandManager = commandManager;
+    TextureProvider = textureProvider;
 
     ECommonsMain.Init(pluginInterface, this);
 
@@ -40,7 +43,7 @@ public sealed class Plugin : IDalamudPlugin
     // ITextureProvider takes care of the image caching and dispose
     var goatImage = textureProvider.GetTextureFromFile(file);
 
-    ConfigWindow = new ConfigWindow(this, WindowSystem);
+    ConfigWindow = new ConfigWindow(WindowSystem);
     MainWindow = new MainWindow(this, goatImage);
 
     WindowSystem.AddWindow(ConfigWindow);

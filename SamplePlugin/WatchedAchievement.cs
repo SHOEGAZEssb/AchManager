@@ -1,10 +1,8 @@
 using AchManager.AchievementTrigger;
+using Dalamud.Interface.ImGuiNotification;
 using ECommons.DalamudServices;
-using ECommons.EzHookManager;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
 using System.Linq;
-using static Dalamud.Interface.Utility.Raii.ImRaii;
 
 namespace AchManager
 {
@@ -37,13 +35,14 @@ namespace AchManager
     public uint WatchedID { get; private set; }
     private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
 
+    private IActiveNotification? _lastNotification;
+
     public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
       AchievementHookManager.OnAchievementProgress += AchievementHookManager_OnAchievementProgress;
       WatchedID = id;
       Trigger = trigger;
       _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);
-
     }
 
     private void AchievementHookManager_OnAchievementProgress(object? sender, AchievementProgressEventArgs e)
@@ -52,11 +51,35 @@ namespace AchManager
       {
         if (Progress != e.Progress)
         {
-          Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
+          if (Plugin.Configuration.ShowChatMessage)
+            Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
+
+          if (Plugin.Configuration.ShowNotification)
+          {
+            var notif = new Notification
+            {
+              InitialDuration = TimeSpan.FromSeconds(3),
+              Title = _achievementInfo?.Name ?? string.Empty,
+              Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
+              Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
+              Progress = e.Progress / e.ProgressMax,
+              IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo.Icon)
+            };
+
+            _lastNotification = Svc.NotificationManager.AddNotification(notif);
+            _lastNotification.Dismiss += LastNotification_Dismiss;
+          }
         }
 
         Progress = e.Progress;
       }
+    }
+
+    private void LastNotification_Dismiss(Dalamud.Interface.ImGuiNotification.EventArgs.INotificationDismissArgs obj)
+    {
+      _lastNotification!.Dismiss -= LastNotification_Dismiss;
+      _lastNotification!.IconTexture?.Dispose();
+      _lastNotification = null;
     }
 
     private void Trigger_OnTrigger(object? sender, EventArgs e)
