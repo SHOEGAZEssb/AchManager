@@ -29,6 +29,7 @@ namespace AchManager.EventManager
 
     private void DutyState_DutyCompleted(object? sender, ushort e)
     {
+      Svc.Log.Debug($"{nameof(DutyCompletedEventManager)}: Fire");
       FireOnEvent(EventArgs.Empty);
     }
   }

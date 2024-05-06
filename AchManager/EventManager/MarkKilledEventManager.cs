@@ -1,3 +1,4 @@
+using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
@@ -32,6 +33,8 @@ namespace AchManager.EventManager
     /// </summary>
     private static readonly Dictionary<uint, NotoriousMonster?> _notoriousMonstersCache = [];
 
+    private GameObject? _cachedTarget;
+
     private MarkKilledEventManager()
     {
       Svc.Framework.Update += Framework_Update;
@@ -41,14 +44,18 @@ namespace AchManager.EventManager
     {
       // check if previous target is dead
       var prevTarget = Svc.Targets.PreviousTarget;
-      if (prevTarget != null && prevTarget.IsDead)
+      if (prevTarget != null && prevTarget.IsDead && prevTarget != _cachedTarget)
       {
         // check if target was a mark
         if (prevTarget.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)
         {
           var nm = GetNotoriousMonster(prevTarget.DataId);
           if (nm != null)
+          {
+            Svc.Log.Debug($"{nameof(MarkKilledEventManager)}: Fire");
+            _cachedTarget = prevTarget;
             FireOnEvent(new MarkKilledEventArgs(nm.Rank));
+          }
         }
       }
     }

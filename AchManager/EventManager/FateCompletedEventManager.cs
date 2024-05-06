@@ -46,13 +46,11 @@ namespace AchManager.EventManager
 
     private void FateChanged(FateContext* newFate)
     {
-      if (newFate != null)
+      if (newFate == null)
       {
-        Svc.Log.Debug($"Fate changed to {newFate->Name}");
-      }
-      else
+        Svc.Log.Debug($"{nameof(FateCompletedEventManager)}: Fire");
         FireOnEvent(EventArgs.Empty);
-      Svc.Log.Debug($"Fate changed to null");
+      }
     }
   }
 }
