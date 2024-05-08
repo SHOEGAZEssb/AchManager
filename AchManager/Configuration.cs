@@ -51,6 +51,20 @@ public class Configuration : IPluginConfiguration
   }
   private bool _showChatMessage = true;
 
+  public bool FilterLegacyAchievements
+  {
+    get => _filterLegacyAchievements;
+    set 
+    { 
+      if (_filterLegacyAchievements != value)
+      {
+        _filterLegacyAchievements = value;
+        Save();
+      }
+    }
+  }
+  private bool _filterLegacyAchievements = true;
+
   /// <summary>
   /// Holds the ids of all watched achievements together with the
   /// configured trigger type. Should not be modified directly.
