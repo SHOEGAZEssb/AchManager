@@ -15,7 +15,9 @@ public class ConfigWindow(WindowSystem windowSystem)
 {
   private readonly WindowSystem _windowSystem = windowSystem;
   private readonly Configuration Configuration = Plugin.Configuration;
-  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1) ?? [];
+  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
+                                                               .Where(a => (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy") 
+                                                               ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
 
@@ -55,22 +57,16 @@ public class ConfigWindow(WindowSystem windowSystem)
 
   private void DrawFullAchievementList()
   {
-    IEnumerable<Achievement> achievements;
-    if (Configuration.FilterLegacyAchievements)
-      achievements = _allAchievements.Where(a => (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy");
-    else
-      achievements = _allAchievements;
-
     ImGui.Text("Search");
     ImGui.SameLine();
     if (ImGui.InputText("##allAchievementsSearchText", ref _allAchievementsSearchText, 128))
     {
-      _filteredAllAchievements = achievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
+      _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
                                                              a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
     }
 
     if (string.IsNullOrEmpty(_allAchievementsSearchText))
-      _filteredAllAchievements = achievements;
+      _filteredAllAchievements = _allAchievements;
 
     if (ImGui.BeginTable("##allAchievementsTable", 4, _tableFlags))
     {
@@ -183,12 +179,6 @@ public class ConfigWindow(WindowSystem windowSystem)
       var notif = Configuration.ShowNotification;
       if (ImGui.Checkbox("##showNotification", ref notif))
         Configuration.ShowNotification = notif;
-
-      ImGui.Text("Ignore Legacy Achievements");
-      ImGui.SameLine();
-      var legacy = Configuration.FilterLegacyAchievements;
-      if (ImGui.Checkbox("##showLegacyAchievements", ref legacy))
-        Configuration.FilterLegacyAchievements = legacy;
     }
   }
 
