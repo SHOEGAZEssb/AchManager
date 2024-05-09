@@ -16,42 +16,6 @@ public class Configuration : IPluginConfiguration
   public int Version { get; set; } = 0;
 
   /// <summary>
-  /// If true, shows a dalamud notification
-  /// when an achievement gains progress.
-  /// </summary>
-  public bool ShowNotification
-  {
-    get => _showNotification;
-    set
-    {
-      if (ShowNotification != value)
-      {
-        _showNotification = value;
-        Save();
-      }
-    }
-  }
-  private bool _showNotification = true;
-
-  /// <summary>
-  /// If true, shows a chat message
-  /// when an achievement gains progress.
-  /// </summary>
-  public bool ShowChatMessage
-  {
-    get => _showChatMessage;
-    set
-    {
-      if (ShowChatMessage != value)
-      {
-        _showChatMessage = value;
-        Save();
-      }
-    }
-  }
-  private bool _showChatMessage = true;
-
-  /// <summary>
   /// Holds the ids of all watched achievements together with the
   /// configured trigger type. Should not be modified directly.
   /// Use <see cref="AddWatchedAchievement(uint)"/> or <see cref="RemoveWatchedAchievement(uint)"/>.

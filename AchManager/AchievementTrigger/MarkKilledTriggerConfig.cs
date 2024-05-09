@@ -12,7 +12,7 @@ namespace AchManager.AchievementTrigger
   }
 
   [Serializable]
-  public class MarkKilledTriggerConfig : ITriggerConfig
+  public class MarkKilledTriggerConfig : TriggerConfig
   {
     #region Properties
 

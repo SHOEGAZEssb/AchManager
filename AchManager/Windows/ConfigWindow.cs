@@ -29,7 +29,7 @@ public class ConfigWindow(WindowSystem windowSystem)
                     | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
                     | ImGuiTableFlags.SizingFixedFit;
 
-  private ConfigWindowBase? _currentConfigWindow;
+  private DefaultConfigWindow? _currentConfigWindow;
 
   public override void Draw()
   {
@@ -44,12 +44,6 @@ public class ConfigWindow(WindowSystem windowSystem)
       if (ImGui.BeginTabItem("Watched Achievements"))
       {
         DrawWatchedAchievementList();
-        ImGui.EndTabItem();
-      }
-
-      if (ImGui.BeginTabItem("General Config"))
-      {
-        DrawGeneralConfig();
         ImGui.EndTabItem();
       }
     }
@@ -141,12 +135,12 @@ public class ConfigWindow(WindowSystem windowSystem)
         }
 
         ImGui.TableNextColumn();
-        if (ach.Value is IConfigurableTrigger t && ImGui.Button($"Config##ach_{ach.Key}_openConfig"))
+        if (ach.Value != null && ImGui.Button($"Config##ach_{ach.Key}_openConfig"))
         {
           if (_currentConfigWindow != null)
             _windowSystem.RemoveWindow(_currentConfigWindow);
 
-          _currentConfigWindow = GetConfigWindowForTrigger(t, Configuration);
+          _currentConfigWindow = GetConfigWindowForTrigger(ach.Value, Configuration);
           _windowSystem.AddWindow(_currentConfigWindow);
           _currentConfigWindow.Toggle();
         }
@@ -159,26 +153,6 @@ public class ConfigWindow(WindowSystem windowSystem)
       }
 
       ImGui.EndTable();
-    }
-  }
-
-  private void DrawGeneralConfig()
-  {
-    if (ImGui.TreeNodeEx("##notificationConfig", ImGuiTreeNodeFlags.CollapsingHeader | ImGuiTreeNodeFlags.DefaultOpen, "Progress Notifications"))
-    {
-      ImGui.Indent();
-
-      ImGui.Text("Chat");
-      ImGui.SameLine();
-      var chat = Configuration.ShowChatMessage;
-      if (ImGui.Checkbox("##showChatMessage", ref chat))
-        Configuration.ShowChatMessage = chat;
-
-      ImGui.Text("Dalamud Notification");
-      ImGui.SameLine();
-      var notif = Configuration.ShowNotification;
-      if (ImGui.Checkbox("##showNotification", ref notif))
-        Configuration.ShowNotification = notif;
     }
   }
 
@@ -208,13 +182,13 @@ public class ConfigWindow(WindowSystem windowSystem)
     return strings;
   }
 
-  private static ConfigWindowBase GetConfigWindowForTrigger(IConfigurableTrigger trigger, Configuration pluginConfig)
+  private static DefaultConfigWindow GetConfigWindowForTrigger(AchievementUpdateTriggerBase trigger, Configuration pluginConfig)
   {
     if (trigger.Config is MarkKilledTriggerConfig mktc)
       return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
     else if (trigger.Config is ChatMessageTriggerConfig cmtc)
       return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
     else
-      throw new NotImplementedException($"No config window for config type {trigger.Config.GetType().Name}");
+      return new DefaultConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
   }
 }

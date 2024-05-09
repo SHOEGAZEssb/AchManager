@@ -2,6 +2,7 @@ using AchManager.AchievementTrigger;
 using Dalamud.Interface.ImGuiNotification;
 using ECommons.DalamudServices;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AchManager
@@ -35,7 +36,7 @@ namespace AchManager
     public uint WatchedID { get; private set; }
     private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
 
-    private IActiveNotification? _lastNotification;
+    private readonly List<IActiveNotification> _activeNotifications = [];
 
     public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
@@ -56,10 +57,10 @@ namespace AchManager
         {
           if (Progress != null)
           {
-            if (Plugin.Configuration.ShowChatMessage)
+            if (Trigger!.Config.ShowChatMessage)
               Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
 
-            if (Plugin.Configuration.ShowNotification)
+            if (Trigger!.Config.ShowNotification)
             {
               var notif = new Notification
               {
@@ -68,11 +69,12 @@ namespace AchManager
                 Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
                 Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
                 Progress = e.Progress / e.ProgressMax,
-                IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo.Icon)
+                IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo?.Icon ?? 0)
               };
 
-              _lastNotification = Svc.NotificationManager.AddNotification(notif);
-              _lastNotification.Dismiss += LastNotification_Dismiss;
+              var newNotif = Svc.NotificationManager.AddNotification(notif);
+              newNotif.Dismiss += LastNotification_Dismiss;
+              _activeNotifications.Add(newNotif);
             }
           }
         }
@@ -83,9 +85,9 @@ namespace AchManager
 
     private void LastNotification_Dismiss(Dalamud.Interface.ImGuiNotification.EventArgs.INotificationDismissArgs obj)
     {
-      _lastNotification!.Dismiss -= LastNotification_Dismiss;
-      _lastNotification!.IconTexture?.Dispose();
-      _lastNotification = null;
+      obj.Notification.Dismiss -= LastNotification_Dismiss;
+      obj.Notification.IconTexture?.Dispose();
+      _activeNotifications.Remove(obj.Notification);
     }
 
     private void Trigger_OnTrigger(object? sender, EventArgs e)

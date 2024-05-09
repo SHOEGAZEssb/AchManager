@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace AchManager.AchievementTrigger
 {
   [Serializable]
-  internal class ChatMessageTrigger : AchievementUpdateTriggerBase, IConfigurableTrigger
+  internal class ChatMessageTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 
     public override string TriggerIdentifier => nameof(ChatMessageTrigger);
 
-    public ITriggerConfig Config => TypedConfig;
+    public override TriggerConfig Config => TypedConfig;
 
     /// <summary>
     /// Configuration for this trigger.

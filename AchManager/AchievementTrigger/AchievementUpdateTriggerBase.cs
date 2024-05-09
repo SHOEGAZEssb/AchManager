@@ -25,6 +25,11 @@ namespace AchManager.AchievementTrigger
     public abstract string TriggerIdentifier { get; }
 
     /// <summary>
+    /// The configuration of this trigger.
+    /// </summary>
+    public virtual TriggerConfig Config { get; } = new TriggerConfig();
+
+    /// <summary>
     /// Safety bool to stop double initialization.
     /// </summary>
     protected bool _isInitialized;

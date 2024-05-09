@@ -8,13 +8,13 @@ namespace AchManager.AchievementTrigger
   /// Trigger that fires when a mark is killed.
   /// </summary>
   [Serializable]
-  public class MarkKilledTrigger : AchievementUpdateTriggerBase, IConfigurableTrigger
+  public class MarkKilledTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 
     public override string TriggerIdentifier => nameof(MarkKilledTrigger);
 
-    public ITriggerConfig Config => TypedConfig;    
+    public override TriggerConfig Config => TypedConfig;    
 
     /// <summary>
     /// Configuration for this trigger.

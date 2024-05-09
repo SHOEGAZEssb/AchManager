@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AchManager.AchievementTrigger
 {
   internal class ChatMessageTriggerConfigWindow(ChatMessageTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
-    : ConfigWindowBase(pluginConfig, name, flags, forceMainWindow)
+    : DefaultConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
   {
     #region Properties
 
@@ -17,7 +17,7 @@ namespace AchManager.AchievementTrigger
 
     #endregion Properties
 
-    public override void Draw()
+    protected override void DrawChildContent()
     {
       ImGui.Text("Required Message Content: ");
       var rmq = _config.RequiredMessageContent;
@@ -25,7 +25,7 @@ namespace AchManager.AchievementTrigger
       {
         _config.RequiredMessageContent = rmq;
         _pluginConfig.Save();
-      }  
+      }
     }
   }
 }

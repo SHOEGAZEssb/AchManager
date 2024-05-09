@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AchManager.AchievementTrigger
 {
   [Serializable]
-  internal class ChatMessageTriggerConfig() : ITriggerConfig
+  internal class ChatMessageTriggerConfig() : TriggerConfig
   {
     #region Properties
 

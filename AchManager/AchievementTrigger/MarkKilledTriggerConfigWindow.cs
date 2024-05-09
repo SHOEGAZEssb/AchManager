@@ -6,7 +6,8 @@ using System.Linq;
 
 namespace AchManager.AchievementTrigger
 {
-  internal class MarkKilledTriggerConfigWindow(MarkKilledTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false) : ConfigWindowBase(pluginConfig, name, flags, forceMainWindow)
+  internal class MarkKilledTriggerConfigWindow(MarkKilledTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+    : DefaultConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
   {
     #region Properties
 
@@ -22,12 +23,11 @@ namespace AchManager.AchievementTrigger
         }
       }
     }
-
     private readonly MarkKilledTriggerConfig _config = config;
 
     #endregion Properties
 
-    public override void Draw()
+    protected override void DrawChildContent()
     {
       ImGui.Text("Killed rank to update: ");
       ImGui.SameLine();
