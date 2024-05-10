@@ -89,6 +89,16 @@ public class Configuration : IPluginConfiguration
     }
   }
 
+  public void FetchProgress()
+  {
+    foreach (var ach in WatchedAchievements.Keys)
+    {
+      AchievementHookManager.RequestProgess(ach);
+    }
+
+    Svc.Chat.Print("Achievement Progress fetched");
+  }
+
   private void InitializeManager()
   {
     try

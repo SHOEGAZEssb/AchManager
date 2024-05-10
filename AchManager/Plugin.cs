@@ -43,6 +43,11 @@ public sealed class Plugin : IDalamudPlugin
       HelpMessage = "Open the AchManager UI"
     });
 
+    CommandManager.AddHandler("/achfetch", new CommandInfo(OnAchFetchCommand)
+    {
+      HelpMessage = "Manually fetches the progress of all watched achievements"
+    });
+
     PluginInterface.UiBuilder.Draw += DrawUI;
 
     // This adds a button to the plugin installer entry of this plugin which allows
@@ -62,6 +67,11 @@ public sealed class Plugin : IDalamudPlugin
   {
     // in response to the slash command, just toggle the display status of our main ui
     ToggleMainUI();
+  }
+
+  private void OnAchFetchCommand(string command, string args)
+  {
+    Configuration.FetchProgress();
   }
 
   private void DrawUI() => WindowSystem.Draw();
