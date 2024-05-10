@@ -13,15 +13,12 @@ public sealed class Plugin : IDalamudPlugin
 {
   public static ITextureProvider TextureProvider { get; private set; }
 
-  private const string CommandName = "/pmycommand";
-
   private DalamudPluginInterface PluginInterface { get; init; }
   private ICommandManager CommandManager { get; init; }
   public static Configuration Configuration { get; private set; }
 
   public readonly WindowSystem WindowSystem = new("AchManager");
   private ConfigWindow ConfigWindow { get; init; }
-  private MainWindow MainWindow { get; init; }
 
   public Plugin(
       [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -37,30 +34,19 @@ public sealed class Plugin : IDalamudPlugin
     Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
     Configuration.Initialize(PluginInterface);
 
-    // you might normally want to embed resources and load them from the manifest stream
-    var file = new FileInfo(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png"));
-
-    // ITextureProvider takes care of the image caching and dispose
-    var goatImage = textureProvider.GetTextureFromFile(file);
-
     ConfigWindow = new ConfigWindow(WindowSystem);
-    MainWindow = new MainWindow(this, goatImage);
 
     WindowSystem.AddWindow(ConfigWindow);
-    WindowSystem.AddWindow(MainWindow);
 
-    CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+    CommandManager.AddHandler("/ach", new CommandInfo(OnAchCommand)
     {
-      HelpMessage = "A useful message to display in /xlhelp"
+      HelpMessage = "Open the AchManager UI"
     });
 
     PluginInterface.UiBuilder.Draw += DrawUI;
 
     // This adds a button to the plugin installer entry of this plugin which allows
     // to toggle the display status of the configuration ui
-    PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
-
-    // Adds another button that is doing the same but for the main ui of the plugin
     PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
   }
 
@@ -68,11 +54,11 @@ public sealed class Plugin : IDalamudPlugin
   {
     WindowSystem.RemoveAllWindows();
 
-    CommandManager.RemoveHandler(CommandName);
+    CommandManager.RemoveHandler("/ach");
     ECommonsMain.Dispose();
   }
 
-  private void OnCommand(string command, string args)
+  private void OnAchCommand(string command, string args)
   {
     // in response to the slash command, just toggle the display status of our main ui
     ToggleMainUI();
@@ -80,6 +66,5 @@ public sealed class Plugin : IDalamudPlugin
 
   private void DrawUI() => WindowSystem.Draw();
 
-  public void ToggleConfigUI() => ConfigWindow.Toggle();
-  public void ToggleMainUI() => MainWindow.Toggle();
+  public void ToggleMainUI() => ConfigWindow.Toggle();
 }
