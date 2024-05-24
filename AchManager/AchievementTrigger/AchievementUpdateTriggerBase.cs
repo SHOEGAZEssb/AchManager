@@ -1,7 +1,7 @@
+using ECommons.Automation.NeoTaskManager;
 using JsonSubTypes;
 using Newtonsoft.Json;
 using System;
-using System.Runtime.Serialization;
 
 namespace AchManager.AchievementTrigger
 {
@@ -34,6 +34,8 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     protected bool _isInitialized;
 
+    private readonly TaskManager _taskManager = new();
+
     #endregion Properties
 
     #region Construction
@@ -49,7 +51,11 @@ namespace AchManager.AchievementTrigger
 
     protected void FireOnTrigger()
     {
-      OnTrigger?.Invoke(this, EventArgs.Empty);
+      _taskManager.EnqueueDelay(Config.DelayMS);
+      _taskManager.Enqueue(() =>
+      {
+        OnTrigger?.Invoke(this, EventArgs.Empty);
+      });
     }
 
     protected abstract void Init();

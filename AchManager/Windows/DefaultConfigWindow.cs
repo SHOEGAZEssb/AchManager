@@ -44,6 +44,22 @@ namespace AchManager.Windows
         ImGui.Unindent();
       }
 
+      if (ImGui.TreeNodeEx("##delayConfig", ImGuiTreeNodeFlags.CollapsingHeader | ImGuiTreeNodeFlags.DefaultOpen, "Progress Check Delay"))
+      {
+        ImGui.Indent();
+
+        ImGui.Text("Delay (ms)");
+        ImGui.SameLine();
+        var delay = _triggerConfig.DelayMS;
+        if (ImGui.InputInt("##delayMS", ref delay) && delay >= 0)
+        {
+          _triggerConfig.DelayMS = delay;
+          _pluginConfig.Save();
+        }
+
+        ImGui.Unindent();
+      }
+
       DrawChildContent();
     }
 

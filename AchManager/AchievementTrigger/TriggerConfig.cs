@@ -19,6 +19,11 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     public bool ShowChatMessage { get; set; } = true;
 
+    /// <summary>
+    /// Delay in ms to wait before sending the trigger.
+    /// </summary>
+    public int DelayMS { get; set; } = 0;
+
     #endregion Properties
   }
 }
