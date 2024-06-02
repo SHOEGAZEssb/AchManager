@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AchManager.AchievementTrigger
 {
@@ -12,6 +8,8 @@ namespace AchManager.AchievementTrigger
     #region Properties
 
     public string RequiredMessageContent { get; set; } = string.Empty;
+
+    public bool IsRegex { get; set; } = false;
 
     #endregion Properties
   }

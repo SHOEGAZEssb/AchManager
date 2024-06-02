@@ -1,10 +1,5 @@
 ﻿using AchManager.Windows;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AchManager.AchievementTrigger
 {
@@ -19,11 +14,24 @@ namespace AchManager.AchievementTrigger
 
     protected override void DrawChildContent()
     {
-      ImGui.Text("Required Message Content: ");
+      var isRegex = _config.IsRegex;
+
+      if (isRegex)
+        ImGui.Text("Regex pattern to check message against:");
+      else
+        ImGui.Text("Required Message Content:");
+
       var rmq = _config.RequiredMessageContent;
       if (ImGui.InputText("##requiredMessageContent", ref rmq, 128))
       {
         _config.RequiredMessageContent = rmq;
+        _pluginConfig.Save();
+      }
+
+      ImGui.SameLine();
+      if (ImGui.Checkbox("Is Regex##isRegexCB", ref isRegex))
+      {
+        _config.IsRegex = isRegex;
         _pluginConfig.Save();
       }
     }

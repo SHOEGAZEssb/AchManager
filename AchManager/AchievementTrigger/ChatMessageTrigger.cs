@@ -1,9 +1,6 @@
 ﻿using AchManager.EventManager;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace AchManager.AchievementTrigger
 {
@@ -39,9 +36,13 @@ namespace AchManager.AchievementTrigger
 
     private void ChatMessageEventManager_OnEvent(object? sender, ChatMessageEventArgs e)
     {
-      if (!string.IsNullOrEmpty(TypedConfig.RequiredMessageContent) &&
-        e.Message.Contains(TypedConfig.RequiredMessageContent, StringComparison.CurrentCultureIgnoreCase))
+      if (string.IsNullOrEmpty(TypedConfig.RequiredMessageContent) || string.IsNullOrEmpty(e.Message))
+        return;
+
+      if (TypedConfig.IsRegex && Regex.IsMatch(e.Message, TypedConfig.RequiredMessageContent))
         FireOnTrigger();
+      else if (e.Message.Contains(TypedConfig.RequiredMessageContent, StringComparison.CurrentCultureIgnoreCase))
+        FireOnTrigger();        
     }
   }
 }

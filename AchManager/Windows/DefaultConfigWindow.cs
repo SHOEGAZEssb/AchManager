@@ -1,7 +1,6 @@
 ﻿using AchManager.AchievementTrigger;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
-using System;
 
 namespace AchManager.Windows
 {
