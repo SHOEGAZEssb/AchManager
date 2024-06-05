@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace AchManager
 {
-  internal class WatchedAchievement : IDisposable
+  public class WatchedAchievement : IDisposable
   {
     /// <summary>
     /// Event that is fired when the achievement gets completed.
@@ -117,6 +117,8 @@ namespace AchManager
       AchievementHookManager.OnAchievementProgress -= AchievementHookManager_OnAchievementProgress;
       Trigger?.Dispose();
       Trigger = null;
+
+      GC.SuppressFinalize(this);
     }
   }
 }

@@ -44,5 +44,10 @@ namespace AchManager
       var ach = _achievements.FirstOrDefault(a => a.WatchedID == id) ?? throw new ArgumentException($"Can't switch trigger type: Achievement with id {id} is not being watched");
       ach.Trigger = trigger;
     }
+
+    public WatchedAchievement GetAchievement(uint id)
+    {
+      return _achievements.First(a => a.WatchedID == id);
+    }
   }
 }

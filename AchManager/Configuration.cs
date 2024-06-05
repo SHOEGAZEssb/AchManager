@@ -101,6 +101,11 @@ public class Configuration : IPluginConfiguration
     Svc.Chat.Print("Achievement Progress fetched");
   }
 
+  public WatchedAchievement GetAchievement(uint id)
+  {
+    return _achievementManager!.GetAchievement(id);
+  }
+
   private void InitializeManager()
   {
     try

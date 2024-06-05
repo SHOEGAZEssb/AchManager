@@ -107,11 +107,12 @@ public class ConfigWindow(WindowSystem windowSystem)
 
   private void DrawWatchedAchievementList()
   {
-    if (ImGui.BeginTable("##watchedAchievementsTable", 6, _tableFlags))
+    if (ImGui.BeginTable("##watchedAchievementsTable", 7, _tableFlags))
     {
       ImGui.TableSetupColumn("Ach Name");
       ImGui.TableSetupColumn("Ach Description");
       ImGui.TableSetupColumn("Ach Category");
+      ImGui.TableSetupColumn("Progress");
       ImGui.TableSetupColumn("Update Trigger");
       ImGui.TableSetupColumn("Config");
       ImGui.TableSetupColumn("Remove");
@@ -133,6 +134,10 @@ public class ConfigWindow(WindowSystem windowSystem)
 
         ImGui.TableNextColumn();
         ImGui.Text(achInfo.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
+
+        var watched = Configuration.GetAchievement(ach.Key);
+        ImGui.TableNextColumn();
+        ImGui.Text($"{watched.Progress} / {watched.ProgressMax}");
 
         ImGui.TableNextColumn();
         int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Value));
