@@ -9,6 +9,11 @@ namespace AchManager
 {
   internal class WatchedAchievement : IDisposable
   {
+    /// <summary>
+    /// Event that is fired when the achievement gets completed.
+    /// </summary>
+    public event EventHandler? OnCompleted;
+
     public AchievementUpdateTriggerBase? Trigger
     {
       get => trigger;
@@ -32,6 +37,7 @@ namespace AchManager
     private AchievementUpdateTriggerBase? trigger;
 
     public uint? Progress { get; private set; }
+    public uint? ProgressMax { get; private set; }
 
     public uint WatchedID { get; private set; }
     private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
@@ -51,35 +57,46 @@ namespace AchManager
 
     private void AchievementHookManager_OnAchievementProgress(object? sender, AchievementProgressEventArgs e)
     {
-      if (e.ID == WatchedID)
+      try
       {
-        if (Progress != e.Progress)
+        if (e.ID == WatchedID)
         {
-          if (Progress != null)
+          if (Progress != e.Progress)
           {
-            if (Trigger!.Config.ShowChatMessage)
-              Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
-
-            if (Trigger!.Config.ShowNotification)
+            if (Progress != null)
             {
-              var notif = new Notification
-              {
-                InitialDuration = TimeSpan.FromSeconds(3),
-                Title = _achievementInfo?.Name ?? string.Empty,
-                Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
-                Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
-                Progress = e.Progress / e.ProgressMax,
-                IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo?.Icon ?? 0)
-              };
+              if (Trigger?.Config.ShowChatMessage ?? false)
+                Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
 
-              var newNotif = Svc.NotificationManager.AddNotification(notif);
-              newNotif.Dismiss += LastNotification_Dismiss;
-              _activeNotifications.Add(newNotif);
+              if (Trigger?.Config.ShowNotification ?? false)
+              {
+                var notif = new Notification
+                {
+                  InitialDuration = TimeSpan.FromSeconds(3),
+                  Title = _achievementInfo?.Name ?? string.Empty,
+                  Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
+                  Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
+                  Progress = e.Progress / e.ProgressMax,
+                  IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo?.Icon ?? 0)
+                };
+
+                var newNotif = Svc.NotificationManager.AddNotification(notif);
+                newNotif.Dismiss += LastNotification_Dismiss;
+                _activeNotifications.Add(newNotif);
+              }
             }
           }
-        }
 
-        Progress = e.Progress;
+          Progress = e.Progress;
+          ProgressMax = e.ProgressMax;
+
+          if (Progress == ProgressMax)
+            OnCompleted?.Invoke(this, e);
+        }
+      }
+      catch (Exception ex)
+      {
+        Svc.Log.Error($"Error getting / updating achievement progress for {WatchedID}: {ex.Message}");
       }
     }
 

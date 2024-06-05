@@ -43,6 +43,7 @@ public class Configuration : IPluginConfiguration
   {
     PluginInterface = pluginInterface;
     _achievementManager = new WatchedAchievementManager();
+    _achievementManager.OnWatchedAchievementRemovalRequested += AchievementManager_OnWatchedAchievementRemovalRequested;
     InitializeManager();
   }
 
@@ -72,9 +73,10 @@ public class Configuration : IPluginConfiguration
   public void RemoveWatchedAchievement(uint id)
   {
     if (WatchedAchievements.Remove(id))
+    {
       _achievementManager!.RemoveWatchedAchievement(id);
-
-    Save();
+      Save();
+    }
   }
 
   public void ChangeTriggerTypeForAchievement(uint id, TriggerType triggerType)
@@ -114,5 +116,14 @@ public class Configuration : IPluginConfiguration
 
     foreach (var ach in WatchedAchievements)
       _achievementManager!.AddWatchedAchievement(ach.Key, ach.Value);
+  }
+
+  private void AchievementManager_OnWatchedAchievementRemovalRequested(object? sender, EventArgs e)
+  {
+    if (sender is WatchedAchievement ach)
+    {
+      RemoveWatchedAchievement(ach.WatchedID);
+      Svc.Log.Info($"Achievement with ID {ach.WatchedID} removed from watchlist, due to it being completed.");
+    }
   }
 }

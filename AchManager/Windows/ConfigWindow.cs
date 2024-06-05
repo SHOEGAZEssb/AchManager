@@ -16,7 +16,7 @@ public class ConfigWindow(WindowSystem windowSystem)
   private readonly WindowSystem _windowSystem = windowSystem;
   private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
-                                                               .Where(a => (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy") 
+                                                               .Where(a => (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy")
                                                                ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
@@ -70,31 +70,38 @@ public class ConfigWindow(WindowSystem windowSystem)
       ImGui.TableSetupColumn("Watch");
       ImGui.TableHeadersRow();
 
-      foreach (var ach in _filteredAllAchievements)
+      unsafe
       {
-        ImGui.TableNextRow();
-
-        ImGui.TableNextColumn();
-        ImGui.Text(ach.Name);
-
-        ImGui.TableNextColumn();
-        ImGui.Text(ach.Description);
-
-        ImGui.TableNextColumn();
-        ImGui.Text(ach.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
-
-        ImGui.TableNextColumn();
-        bool watched = Configuration.WatchedAchievements.ContainsKey(ach.RowId);
-        if (ImGui.Checkbox($"##ach_{ach.RowId}_watch", ref watched))
+        var achInstance = FFXIVClientStructs.FFXIV.Client.Game.UI.Achievement.Instance();
+        foreach (var ach in _filteredAllAchievements)
         {
-          if (watched)
-            Configuration.AddWatchedAchievement(ach.RowId);
-          else
-            Configuration.RemoveWatchedAchievement(ach.RowId);
-        }
-      }
+          if (achInstance->IsComplete((int)ach.RowId))
+            continue;
 
-      ImGui.EndTable();
+          ImGui.TableNextRow();
+
+          ImGui.TableNextColumn();
+          ImGui.Text(ach.Name);
+
+          ImGui.TableNextColumn();
+          ImGui.Text(ach.Description);
+
+          ImGui.TableNextColumn();
+          ImGui.Text(ach.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
+
+          ImGui.TableNextColumn();
+          bool watched = Configuration.WatchedAchievements.ContainsKey(ach.RowId);
+          if (ImGui.Checkbox($"##ach_{ach.RowId}_watch", ref watched))
+          {
+            if (watched)
+              Configuration.AddWatchedAchievement(ach.RowId);
+            else
+              Configuration.RemoveWatchedAchievement(ach.RowId);
+          }
+        }
+
+        ImGui.EndTable();
+      }
     }
   }
 
