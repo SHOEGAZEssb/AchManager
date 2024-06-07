@@ -16,6 +16,19 @@ namespace AchManager
 
     private readonly List<WatchedAchievement> _achievements = [];
 
+    #region Construction
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public WatchedAchievementManager() 
+    {
+      Svc.ClientState.Login += ClientState_Login;
+      Svc.ClientState.Logout += ClientState_Logout;
+    }
+
+    #endregion Construction
+
     public void AddWatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
       if (_achievements.Any(a => a.WatchedID == id))
@@ -48,6 +61,18 @@ namespace AchManager
     public WatchedAchievement GetAchievement(uint id)
     {
       return _achievements.First(a => a.WatchedID == id);
+    }
+
+    private void ClientState_Login()
+    {
+      foreach (var achievement in _achievements)
+        achievement.Initialize();
+    }
+
+    private void ClientState_Logout()
+    {
+      foreach (var achievement in _achievements)
+        achievement.Deinitialize();
     }
   }
 }

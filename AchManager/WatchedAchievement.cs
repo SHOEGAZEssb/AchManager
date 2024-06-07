@@ -44,15 +44,37 @@ namespace AchManager
 
     private readonly List<IActiveNotification> _activeNotifications = [];
 
+    private bool _initialized = false;
+
     public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
       AchievementHookManager.OnAchievementProgress += AchievementHookManager_OnAchievementProgress;
       WatchedID = id;
       Trigger = trigger;
-      _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);
+      _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);      
+    }
 
-      // get initial progress
+    /// <summary>
+    /// Fetches initial achievement progress.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">If achievement is already initialized.</exception>
+    public void Initialize()
+    {
+      if (_initialized)
+        throw new InvalidOperationException($"Achievement {WatchedID} is already initialized");
+
       AchievementHookManager.RequestProgess(WatchedID);
+      _initialized = true;
+    }
+
+    /// <summary>
+    /// Resets cached progress.
+    /// </summary>
+    public void Deinitialize()
+    {
+      Progress = null;
+      ProgressMax = null;
+      _initialized = false;
     }
 
     private void AchievementHookManager_OnAchievementProgress(object? sender, AchievementProgressEventArgs e)
