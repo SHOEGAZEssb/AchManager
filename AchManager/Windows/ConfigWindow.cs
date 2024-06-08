@@ -51,6 +51,9 @@ public class ConfigWindow(WindowSystem windowSystem)
 
   private void DrawFullAchievementList()
   {
+    ImGui.Text("Open your achievements window once to filter out completed achievements.");
+    ImGui.Separator();
+
     ImGui.Text("Search");
     ImGui.SameLine();
     if (ImGui.InputText("##allAchievementsSearchText", ref _allAchievementsSearchText, 128))
