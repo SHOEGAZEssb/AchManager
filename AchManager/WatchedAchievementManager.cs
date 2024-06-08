@@ -63,10 +63,15 @@ namespace AchManager
       return _achievements.First(a => a.WatchedID == id);
     }
 
-    private void ClientState_Login()
+    public void InitializeAchievements()
     {
       foreach (var achievement in _achievements)
         achievement.Initialize();
+    }
+
+    private void ClientState_Login()
+    {
+      InitializeAchievements();
     }
 
     private void ClientState_Logout()

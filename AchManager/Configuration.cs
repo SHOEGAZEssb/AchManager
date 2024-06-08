@@ -121,6 +121,8 @@ public class Configuration : IPluginConfiguration
 
     foreach (var ach in WatchedAchievements)
       _achievementManager!.AddWatchedAchievement(ach.Key, ach.Value);
+
+    _achievementManager!.InitializeAchievements();
   }
 
   private void AchievementManager_OnWatchedAchievementRemovalRequested(object? sender, EventArgs e)
