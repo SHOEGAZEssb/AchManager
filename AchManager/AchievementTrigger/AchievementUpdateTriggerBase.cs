@@ -53,7 +53,7 @@ namespace AchManager.AchievementTrigger
 
     protected void FireOnTrigger()
     {
-      if (++_timesTriggered == Config.TriggerEveryCount && Config.TriggerEveryXTimes)
+      if (!Config.TriggerEveryXTimes || ++_timesTriggered == Config.TriggerEveryCount)
       {
         _timesTriggered = 0;
         _taskManager.EnqueueDelay(Config.DelayMS);
