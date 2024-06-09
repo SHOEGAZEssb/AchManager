@@ -16,6 +16,11 @@ public class Configuration : IPluginConfiguration
   public int Version { get; set; } = 0;
 
   /// <summary>
+  /// List of watched achievements.
+  /// </summary>
+  public IEnumerable<WatchedAchievement> Achievements => _achievementManager?.Achievements ?? [];
+
+  /// <summary>
   /// Holds the ids of all watched achievements together with the
   /// configured trigger type. Should not be modified directly.
   /// Use <see cref="AddWatchedAchievement(uint)"/> or <see cref="RemoveWatchedAchievement(uint)"/>.
@@ -99,11 +104,6 @@ public class Configuration : IPluginConfiguration
     }
 
     Svc.Chat.Print("Achievement Progress fetched");
-  }
-
-  public WatchedAchievement GetAchievement(uint id)
-  {
-    return _achievementManager!.GetAchievement(id);
   }
 
   private void InitializeManager()

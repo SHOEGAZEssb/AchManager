@@ -40,7 +40,7 @@ namespace AchManager
     public uint? ProgressMax { get; private set; }
 
     public uint WatchedID { get; private set; }
-    private readonly Lumina.Excel.GeneratedSheets.Achievement? _achievementInfo;
+    public Lumina.Excel.GeneratedSheets.Achievement AchievementInfo { get; }
 
     private readonly List<IActiveNotification> _activeNotifications = [];
 
@@ -51,7 +51,7 @@ namespace AchManager
       AchievementHookManager.OnAchievementProgress += AchievementHookManager_OnAchievementProgress;
       WatchedID = id;
       Trigger = trigger;
-      _achievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.FirstOrDefault(a => a.RowId == WatchedID);      
+      AchievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Achievement>()?.First(a => a.RowId == WatchedID) ?? throw new ArgumentException($"Could not get achievement info for {WatchedID}");
     }
 
     /// <summary>
@@ -88,18 +88,18 @@ namespace AchManager
             if (Progress != null)
             {
               if (Trigger?.Config.ShowChatMessage ?? false)
-                Svc.Chat.Print($"Achievement '{_achievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
+                Svc.Chat.Print($"Achievement '{AchievementInfo?.Name}' Progress: {e.Progress}/{e.ProgressMax}");
 
               if (Trigger?.Config.ShowNotification ?? false)
               {
                 var notif = new Notification
                 {
                   InitialDuration = TimeSpan.FromSeconds(3),
-                  Title = _achievementInfo?.Name ?? string.Empty,
+                  Title = AchievementInfo?.Name ?? string.Empty,
                   Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
-                  Content = $"{_achievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
+                  Content = $"{AchievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
                   Progress = e.Progress / e.ProgressMax,
-                  IconTexture = Plugin.TextureProvider.GetIcon(_achievementInfo?.Icon ?? 0)
+                  IconTexture = Plugin.TextureProvider.GetIcon(AchievementInfo?.Icon ?? 0)
                 };
 
                 var newNotif = Svc.NotificationManager.AddNotification(notif);

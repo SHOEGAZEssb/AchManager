@@ -10,16 +10,18 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace AchManager.Windows;
 
-public class ConfigWindow(WindowSystem windowSystem)
-  : Window("AchManager Configuration###With a constant ID")
+public class ConfigWindow : Window
 {
-  private readonly WindowSystem _windowSystem = windowSystem;
+  private readonly WindowSystem _windowSystem;
   private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
-                                                               .Where(a => (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy")
+                                                               .Where(a => !string.IsNullOrEmpty(a.Name) &&
+                                                                           (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy")
                                                                ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
+
+  private IEnumerable<WatchedAchievement> _watchedAchievements = [];
 
   private static readonly string[] _triggerTypeStrings = GetTriggerTypeStrings();
 
@@ -30,6 +32,23 @@ public class ConfigWindow(WindowSystem windowSystem)
                     | ImGuiTableFlags.SizingFixedFit;
 
   private DefaultConfigWindow? _currentConfigWindow;
+
+  private enum AchievementListColumns
+  {
+    Name = 0,
+    Description = 1,
+    Category = 2,
+    Watch = 3,
+    Progress = 4
+  }
+
+  public ConfigWindow(WindowSystem windowSystem)
+    : base("AchManager Configuration###With a constant ID")
+  {
+    _windowSystem = windowSystem;
+    _filteredAllAchievements = _allAchievements;
+    _watchedAchievements = Configuration.Achievements;
+  }
 
   public override void Draw()
   {
@@ -56,22 +75,32 @@ public class ConfigWindow(WindowSystem windowSystem)
 
     ImGui.Text("Search");
     ImGui.SameLine();
+    bool needsSorting = false;
     if (ImGui.InputText("##allAchievementsSearchText", ref _allAchievementsSearchText, 128))
     {
-      _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
-                                                             a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
+      if (string.IsNullOrEmpty(_allAchievementsSearchText))
+        _filteredAllAchievements = _allAchievements;
+      else
+        _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                                                               a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
+      needsSorting = true;
     }
-
-    if (string.IsNullOrEmpty(_allAchievementsSearchText))
-      _filteredAllAchievements = _allAchievements;
 
     if (ImGui.BeginTable("##allAchievementsTable", 4, _tableFlags))
     {
-      ImGui.TableSetupColumn("Ach Name");
-      ImGui.TableSetupColumn("Ach Description");
-      ImGui.TableSetupColumn("Ach Category");
-      ImGui.TableSetupColumn("Watch");
+      ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
+      ImGui.TableSetupColumn("Watch", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Watch);
       ImGui.TableHeadersRow();
+
+      var sortSpecs = ImGui.TableGetSortSpecs();
+      if ((sortSpecs.SpecsDirty || needsSorting) && _filteredAllAchievements.Any())
+      {
+        _filteredAllAchievements = SortAchievementList(_filteredAllAchievements, sortSpecs);
+        sortSpecs.SpecsDirty = false;
+        needsSorting = false;
+      }  
 
       unsafe
       {
@@ -112,58 +141,60 @@ public class ConfigWindow(WindowSystem windowSystem)
   {
     if (ImGui.BeginTable("##watchedAchievementsTable", 7, _tableFlags))
     {
-      ImGui.TableSetupColumn("Ach Name");
-      ImGui.TableSetupColumn("Ach Description");
-      ImGui.TableSetupColumn("Ach Category");
-      ImGui.TableSetupColumn("Progress");
-      ImGui.TableSetupColumn("Update Trigger");
-      ImGui.TableSetupColumn("Config");
-      ImGui.TableSetupColumn("Remove");
+      ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
+      ImGui.TableSetupColumn("Progress", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Progress);
+      ImGui.TableSetupColumn("Update Trigger", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
+      ImGui.TableSetupColumn("Config", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
+      ImGui.TableSetupColumn("Remove", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
       ImGui.TableHeadersRow();
 
-      foreach (var ach in Configuration.WatchedAchievements)
+      var sortSpecs = ImGui.TableGetSortSpecs();
+      if (sortSpecs.SpecsDirty && Configuration.Achievements.Any())
       {
-        var achInfo = _allAchievements.FirstOrDefault(a => a.RowId == ach.Key);
-        if (achInfo == null)
-          continue;
+        _watchedAchievements = SortWatchedAchievementList(Configuration.Achievements, sortSpecs);
+        sortSpecs.SpecsDirty = false;
+      }
 
+      foreach (var ach in _watchedAchievements)
+      {
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
-        ImGui.Text(achInfo.Name);
+        ImGui.Text(ach.AchievementInfo.Name);
 
         ImGui.TableNextColumn();
-        ImGui.Text(achInfo.Description);
+        ImGui.Text(ach.AchievementInfo.Description);
 
         ImGui.TableNextColumn();
-        ImGui.Text(achInfo.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
-
-        var watched = Configuration.GetAchievement(ach.Key);
-        ImGui.TableNextColumn();
-        ImGui.Text($"{watched.Progress} / {watched.ProgressMax}");
+        ImGui.Text(ach.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
 
         ImGui.TableNextColumn();
-        int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Value));
-        if (ImGui.Combo($"##ach_{ach.Key}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
+        ImGui.Text($"{ach.Progress} / {ach.ProgressMax}");
+
+        ImGui.TableNextColumn();
+        int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Trigger));
+        if (ImGui.Combo($"##ach_{ach.WatchedID}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
         {
-          Configuration.ChangeTriggerTypeForAchievement(ach.Key, (TriggerType)Enum.Parse(typeof(TriggerType), _triggerTypeStrings[index]));
+          Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, (TriggerType)Enum.Parse(typeof(TriggerType), _triggerTypeStrings[index]));
         }
 
         ImGui.TableNextColumn();
-        if (ach.Value != null && ImGui.Button($"Config##ach_{ach.Key}_openConfig"))
+        if (ach.Trigger != null && ImGui.Button($"Config##ach_{ach.WatchedID}_openConfig"))
         {
           if (_currentConfigWindow != null)
             _windowSystem.RemoveWindow(_currentConfigWindow);
 
-          _currentConfigWindow = GetConfigWindowForTrigger(ach.Value, Configuration);
+          _currentConfigWindow = GetConfigWindowForTrigger(ach.Trigger, Configuration);
           _windowSystem.AddWindow(_currentConfigWindow);
           _currentConfigWindow.Toggle();
         }
 
         ImGui.TableNextColumn();
-        if (ImGui.Button($"Remove##ach_{ach.Key}_removeWatched"))
+        if (ImGui.Button($"Remove##ach_{ach.WatchedID}_removeWatched"))
         {
-          Configuration.RemoveWatchedAchievement(ach.Key);
+          Configuration.RemoveWatchedAchievement(ach.WatchedID);
         }
       }
 
@@ -205,5 +236,73 @@ public class ConfigWindow(WindowSystem windowSystem)
       return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
     else
       return new DefaultConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
+  }
+
+  private static IEnumerable<Achievement> SortAchievementList(IEnumerable<Achievement> achievements, ImGuiTableSortSpecsPtr sortSpecs)
+  {
+    var sortedAchievementList = achievements;
+
+    for (int i = 0; i < sortSpecs.SpecsCount; i++)
+    {
+      var columnSpecs = sortSpecs.Specs;
+
+      switch ((AchievementListColumns)columnSpecs.ColumnUserID)
+      {
+        case AchievementListColumns.Name:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Name.RawString)
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.Name.RawString);
+          break;
+        case AchievementListColumns.Description:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Description.RawString)
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.Description.RawString);
+          break;
+        case AchievementListColumns.Category:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "")
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "");
+          break;
+        case AchievementListColumns.Watch:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId)) 
+                                                                                            : sortedAchievementList.OrderByDescending(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId));
+          break;
+        default:
+          break;
+      }
+    }
+
+    return sortedAchievementList;
+  }
+
+  private static IEnumerable<WatchedAchievement> SortWatchedAchievementList(IEnumerable<WatchedAchievement> achievements, ImGuiTableSortSpecsPtr sortSpecs)
+  {
+    var sortedAchievementList = achievements;
+
+    for (int i = 0; i < sortSpecs.SpecsCount; i++)
+    {
+      var columnSpecs = sortSpecs.Specs;
+
+      switch ((AchievementListColumns)columnSpecs.ColumnUserID)
+      {
+        case AchievementListColumns.Name:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Name.RawString)
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Name.RawString);
+          break;
+        case AchievementListColumns.Description:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Description.RawString)
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Description.RawString);
+          break;
+        case AchievementListColumns.Category:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "")
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "");
+          break;
+        case AchievementListColumns.Progress:
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Progress)
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.Progress);
+          break;
+        default:
+          break;
+      }
+    }
+
+    return sortedAchievementList;
   }
 }

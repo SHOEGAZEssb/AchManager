@@ -14,6 +14,10 @@ namespace AchManager
     /// </summary>
     public event EventHandler? OnWatchedAchievementRemovalRequested;
 
+    /// <summary>
+    /// List of watched achievements.
+    /// </summary>
+    public IReadOnlyList<WatchedAchievement> Achievements => _achievements;
     private readonly List<WatchedAchievement> _achievements = [];
 
     #region Construction
