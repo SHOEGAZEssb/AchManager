@@ -40,6 +40,26 @@ namespace AchManager.Windows
           _pluginConfig.Save();
         }
 
+        ImGui.Separator();
+
+        var notifyEveryXTimes = _triggerConfig.TriggerEveryXTimes;
+        if (ImGui.Checkbox("Notify every##notifyEveryXTimesCB", ref notifyEveryXTimes))
+        {
+          _triggerConfig.TriggerEveryXTimes = notifyEveryXTimes;
+          _pluginConfig.Save();
+        }
+        ImGui.SameLine();
+        ImGui.BeginDisabled(!notifyEveryXTimes);
+        var notifyEveryCount = _triggerConfig.TriggerEveryCount;
+        if (ImGui.SliderInt("##notifyEverySlider", ref notifyEveryCount, 2, 100))
+        {
+          _triggerConfig.TriggerEveryCount = notifyEveryCount;
+          _pluginConfig.Save();
+        }
+        ImGui.EndDisabled();
+        ImGui.SameLine();
+        ImGui.Text("progress steps");
+
         ImGui.Unindent();
       }
 

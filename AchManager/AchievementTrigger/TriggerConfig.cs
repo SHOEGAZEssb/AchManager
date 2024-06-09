@@ -24,6 +24,17 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     public int DelayMS { get; set; } = 0;
 
+    /// <summary>
+    /// If true, triggers only after this trigger has been triggered
+    /// <see cref="TriggerEveryCount"/> times.
+    /// </summary>
+    public bool TriggerEveryXTimes { get; set; } = false;
+
+    /// <summary>
+    /// Amount of triggers necessary to actually trigger.
+    /// </summary>
+    public int TriggerEveryCount { get; set; } = 2;
+
     #endregion Properties
   }
 }

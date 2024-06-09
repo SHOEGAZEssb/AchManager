@@ -36,6 +36,8 @@ namespace AchManager.AchievementTrigger
 
     private readonly TaskManager _taskManager = new();
 
+    private int _timesTriggered = 0;
+
     #endregion Properties
 
     #region Construction
@@ -51,11 +53,15 @@ namespace AchManager.AchievementTrigger
 
     protected void FireOnTrigger()
     {
-      _taskManager.EnqueueDelay(Config.DelayMS);
-      _taskManager.Enqueue(() =>
+      if (++_timesTriggered == Config.TriggerEveryCount && Config.TriggerEveryXTimes)
       {
-        OnTrigger?.Invoke(this, EventArgs.Empty);
-      });
+        _timesTriggered = 0;
+        _taskManager.EnqueueDelay(Config.DelayMS);
+        _taskManager.Enqueue(() =>
+        {
+          OnTrigger?.Invoke(this, EventArgs.Empty);
+        });
+      }
     }
 
     protected abstract void Init();
