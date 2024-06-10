@@ -5,6 +5,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using System.IO;
 
 namespace AchManager;
 
@@ -30,7 +31,7 @@ public sealed class Plugin : IDalamudPlugin
 
     ECommonsMain.Init(pluginInterface, this);
 
-    Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+    Configuration = Configuration.Load(Path.Combine(PluginInterface!.ConfigDirectory.FullName, "AchManager.json")) ?? new Configuration();
     Configuration.Initialize(PluginInterface);
 
     ConfigWindow = new ConfigWindow(WindowSystem);

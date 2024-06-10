@@ -18,6 +18,7 @@ public class Configuration : IPluginConfiguration
   /// <summary>
   /// List of watched achievements.
   /// </summary>
+  [JsonIgnore]
   public IEnumerable<WatchedAchievement> Achievements => _achievementManager?.Achievements ?? [];
 
   /// <summary>
@@ -54,7 +55,13 @@ public class Configuration : IPluginConfiguration
 
   public void Save()
   {
-    PluginInterface!.SavePluginConfig(this);
+    var settings = new JsonSerializerSettings()
+    {
+      ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+    };
+
+    var serializedThis = JsonConvert.SerializeObject(this, settings);
+    File.WriteAllText(Path.Combine(PluginInterface!.ConfigDirectory.FullName, "AchManager.json"), serializedThis);
 
     try
     {
@@ -64,6 +71,24 @@ public class Configuration : IPluginConfiguration
     catch (Exception ex)
     {
       Svc.Log.Error($"Error while serializing WatchedAchievements: {ex.Message}");
+    }
+  }
+
+  public static Configuration? Load(string path)
+  {
+    try
+    {
+      var settings = new JsonSerializerSettings()
+      {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+      };
+
+      return JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(path), settings);
+    }
+    catch (Exception ex)
+    {
+      Svc.Log.Error($"Error while loading plugin configuration: {ex.Message}");
+      return null;
     }
   }
 

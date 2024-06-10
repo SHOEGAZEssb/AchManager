@@ -17,7 +17,7 @@ namespace AchManager
     /// <summary>
     /// List of watched achievements.
     /// </summary>
-    public IReadOnlyList<WatchedAchievement> Achievements => _achievements;
+    public IEnumerable<WatchedAchievement> Achievements => _achievements;
     private readonly List<WatchedAchievement> _achievements = [];
 
     #region Construction
