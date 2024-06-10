@@ -33,6 +33,9 @@ public class ConfigWindow : Window
 
   private DefaultConfigWindow? _currentConfigWindow;
 
+  private bool _fullListNeedsSorting = true;
+  private bool _watchedListNeedsSorting = true;
+
   private enum AchievementListColumns
   {
     Name = 0,
@@ -75,7 +78,6 @@ public class ConfigWindow : Window
 
     ImGui.Text("Search");
     ImGui.SameLine();
-    bool needsSorting = false;
     if (ImGui.InputText("##allAchievementsSearchText", ref _allAchievementsSearchText, 128))
     {
       if (string.IsNullOrEmpty(_allAchievementsSearchText))
@@ -83,7 +85,7 @@ public class ConfigWindow : Window
       else
         _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
                                                                a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
-      needsSorting = true;
+      _fullListNeedsSorting = true;
     }
 
     if (ImGui.BeginTable("##allAchievementsTable", 4, _tableFlags))
@@ -95,11 +97,11 @@ public class ConfigWindow : Window
       ImGui.TableHeadersRow();
 
       var sortSpecs = ImGui.TableGetSortSpecs();
-      if ((sortSpecs.SpecsDirty || needsSorting) && _filteredAllAchievements.Any())
+      if ((sortSpecs.SpecsDirty || _fullListNeedsSorting) && _filteredAllAchievements.Any())
       {
         _filteredAllAchievements = SortAchievementList(_filteredAllAchievements, sortSpecs);
         sortSpecs.SpecsDirty = false;
-        needsSorting = false;
+        _fullListNeedsSorting = false;
       }  
 
       unsafe
@@ -151,10 +153,11 @@ public class ConfigWindow : Window
       ImGui.TableHeadersRow();
 
       var sortSpecs = ImGui.TableGetSortSpecs();
-      if (sortSpecs.SpecsDirty && Configuration.Achievements.Any())
+      if ((sortSpecs.SpecsDirty || _watchedListNeedsSorting) && Configuration.Achievements.Any())
       {
         _watchedAchievements = SortWatchedAchievementList(Configuration.Achievements, sortSpecs);
         sortSpecs.SpecsDirty = false;
+        _watchedListNeedsSorting = false;
       }
 
       foreach (var ach in _watchedAchievements)
