@@ -40,6 +40,8 @@ namespace AchManager
 
       var ach = new WatchedAchievement(id, trigger);
       ach.OnCompleted += Ach_OnCompleted;
+      if (Svc.ClientState.IsLoggedIn)
+        ach.Initialize();
       _achievements.Add(ach);
     }
 
