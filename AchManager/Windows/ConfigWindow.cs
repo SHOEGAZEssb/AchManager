@@ -51,6 +51,14 @@ public class ConfigWindow : Window
     _windowSystem = windowSystem;
     _filteredAllAchievements = _allAchievements;
     _watchedAchievements = Configuration.Achievements;
+
+    SizeConstraints = new()
+    {
+      MinimumSize = new(300, 400),
+      MaximumSize = new(float.MaxValue, float.MaxValue)
+    };
+    Size = new(300, 400);
+    SizeCondition = ImGuiCond.FirstUseEver;
   }
 
   public override void Draw()
@@ -91,9 +99,10 @@ public class ConfigWindow : Window
     if (ImGui.BeginTable("##allAchievementsTable", 4, _tableFlags))
     {
       ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
-      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
       ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
       ImGui.TableSetupColumn("Watch", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Watch);
+      ImGui.TableSetupScrollFreeze(0, 1);
       ImGui.TableHeadersRow();
 
       var sortSpecs = ImGui.TableGetSortSpecs();
@@ -144,12 +153,13 @@ public class ConfigWindow : Window
     if (ImGui.BeginTable("##watchedAchievementsTable", 7, _tableFlags))
     {
       ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
-      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
       ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
       ImGui.TableSetupColumn("Progress", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Progress);
       ImGui.TableSetupColumn("Update Trigger", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
       ImGui.TableSetupColumn("Config", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
       ImGui.TableSetupColumn("Remove", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
+      ImGui.TableSetupScrollFreeze(0, 1);
       ImGui.TableHeadersRow();
 
       var sortSpecs = ImGui.TableGetSortSpecs();

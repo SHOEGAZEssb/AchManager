@@ -4,7 +4,7 @@ using ImGuiNET;
 
 namespace AchManager.Windows
 {
-  internal class DefaultConfigWindow(TriggerConfig triggerConfig, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+  internal class DefaultConfigWindow(TriggerConfig triggerConfig, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.AlwaysAutoResize, bool forceMainWindow = false)
     : Window(name, flags, forceMainWindow)
   {
     private readonly TriggerConfig _triggerConfig = triggerConfig;
