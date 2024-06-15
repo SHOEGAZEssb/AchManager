@@ -22,25 +22,19 @@ namespace AchManager.Windows
       {
         ImGui.Indent();
 
-        ImGui.Text("Chat");
-        ImGui.SameLine();
         var chat = _triggerConfig.ShowChatMessage;
-        if (ImGui.Checkbox("##showChatMessage", ref chat))
+        if (ImGui.Checkbox("Chat##showChatMessage", ref chat))
         {
           _triggerConfig.ShowChatMessage = chat;
           _pluginConfig.Save();
         }
 
-        ImGui.Text("Dalamud Notification");
-        ImGui.SameLine();
         var notif = _triggerConfig.ShowNotification;
-        if (ImGui.Checkbox("##showNotification", ref notif))
+        if (ImGui.Checkbox("Dalamud Notification##showNotification", ref notif))
         {
           _triggerConfig.ShowNotification = notif;
           _pluginConfig.Save();
         }
-
-        ImGui.Separator();
 
         var notifyEveryXTimes = _triggerConfig.TriggerEveryXTimes;
         if (ImGui.Checkbox("Notify every##notifyEveryXTimesCB", ref notifyEveryXTimes))
@@ -79,6 +73,7 @@ namespace AchManager.Windows
         ImGui.Unindent();
       }
 
+      ImGui.Separator();
       DrawChildContent();
     }
 
