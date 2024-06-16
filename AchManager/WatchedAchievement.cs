@@ -89,8 +89,8 @@ namespace AchManager
           {
             if (Progress != null)
             {
-              _progressSteps += (int)(e.Progress - Progress);
-              if (!Trigger?.Config.TriggerEveryXTimes ?? true || _progressSteps >= Trigger.Config.TriggerEveryCount || e.Progress == e.ProgressMax)
+              _progressSteps++;
+              if ((!Trigger?.Config.TriggerEveryXTimes ?? true) || _progressSteps >= Trigger?.Config.TriggerEveryCount || e.Progress == e.ProgressMax)
               {
                 _progressSteps = 0;
 
