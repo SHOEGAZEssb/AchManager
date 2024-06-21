@@ -1,4 +1,5 @@
 using ECommons.Automation.NeoTaskManager;
+using ECommons.GameHelpers;
 using JsonSubTypes;
 using Newtonsoft.Json;
 using System;
@@ -51,11 +52,14 @@ namespace AchManager.AchievementTrigger
 
     protected void FireOnTrigger()
     {
-      _taskManager.EnqueueDelay(Config.DelayMS);
-      _taskManager.Enqueue(() =>
+      if (Config.RequiredJob == Job.Any || (int)Player.Job == (int)Config.RequiredJob)
       {
-        OnTrigger?.Invoke(this, EventArgs.Empty);
-      });
+        _taskManager.EnqueueDelay(Config.DelayMS);
+        _taskManager.Enqueue(() =>
+        {
+          OnTrigger?.Invoke(this, EventArgs.Empty);
+        });
+      }
     }
 
     protected abstract void Init();

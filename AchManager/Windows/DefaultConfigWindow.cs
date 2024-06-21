@@ -1,6 +1,9 @@
 ﻿using AchManager.AchievementTrigger;
 using Dalamud.Interface.Windowing;
+using ECommons;
 using ImGuiNET;
+using System;
+using System.Linq;
 
 namespace AchManager.Windows
 {
@@ -71,6 +74,20 @@ namespace AchManager.Windows
         }
 
         ImGui.Unindent();
+      }
+
+      ImGui.Separator();
+      if (ImGui.TreeNodeEx("##conditionConfig", ImGuiTreeNodeFlags.CollapsingHeader | ImGuiTreeNodeFlags.DefaultOpen, "Conditions"))
+      {
+        ImGui.Text("Required Job:");
+        ImGui.SameLine();
+        var jobStrings = Enum.GetValues<Job>().Select(j => j.ToString()).ToArray();
+        var index = jobStrings.IndexOf(j => j == _triggerConfig.RequiredJob.ToString());
+        if (ImGui.Combo("##requiredJobCB", ref index, jobStrings, jobStrings.Count()))
+        {
+          _triggerConfig.RequiredJob = Enum.Parse<Job>(jobStrings[index]);
+          _pluginConfig.Save();
+        }
       }
 
       ImGui.Separator();
