@@ -30,7 +30,7 @@ public class Configuration : IPluginConfiguration
 
   // the below exist just to make saving less cumbersome
   [NonSerialized]
-  private DalamudPluginInterface? PluginInterface;
+  private IDalamudPluginInterface? PluginInterface;
 
   [NonSerialized]
   private WatchedAchievementManager? _achievementManager;
@@ -45,7 +45,7 @@ public class Configuration : IPluginConfiguration
     { TriggerType.None, null }
   };
 
-  public void Initialize(DalamudPluginInterface pluginInterface)
+  public void Initialize(IDalamudPluginInterface pluginInterface)
   {
     PluginInterface = pluginInterface;
     _achievementManager = new WatchedAchievementManager();

@@ -23,7 +23,7 @@ namespace AchManager.EventManager
       Svc.Chat.ChatMessage += Chat_ChatMessage;
     }
 
-    private void Chat_ChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
+    private void Chat_ChatMessage(Dalamud.Game.Text.XivChatType type, int timestamp, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
       Svc.Log.Debug($"{nameof(ChatMessageEventManager)}: Fire");
       FireOnEvent(new ChatMessageEventArgs(message.TextValue));

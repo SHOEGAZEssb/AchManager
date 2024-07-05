@@ -20,7 +20,9 @@ namespace AchManager
 
     static AchievementHookManager()
     {
-      ReceiveAchievementProgressHook = new EzHook<ReceiveAchievementProgressDelegate>(Achievement.Addresses.ReceiveAchievementProgress.String, ReceiveAchievementProgressDetour);
+      // todo: figure out why the old way via CS does not work anymore
+      //ReceiveAchievementProgressHook = new EzHook<ReceiveAchievementProgressDelegate>(Achievement.Addresses.ReceiveAchievementProgress.String, ReceiveAchievementProgressDetour);
+      ReceiveAchievementProgressHook = new EzHook<ReceiveAchievementProgressDelegate>("C7 81 ?? ?? ?? ?? ?? ?? ?? ?? 89 91 ?? ?? ?? ?? 44 89 81", ReceiveAchievementProgressDetour);
       ReceiveAchievementProgressHook.Enable();
     }
 

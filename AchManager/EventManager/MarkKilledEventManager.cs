@@ -33,7 +33,7 @@ namespace AchManager.EventManager
     /// </summary>
     private static readonly Dictionary<uint, NotoriousMonster?> _notoriousMonstersCache = [];
 
-    private GameObject? _cachedTarget;
+    private IGameObject? _cachedTarget;
 
     private MarkKilledEventManager()
     {

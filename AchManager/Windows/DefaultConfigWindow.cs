@@ -83,7 +83,7 @@ namespace AchManager.Windows
         ImGui.SameLine();
         var jobStrings = Enum.GetValues<Job>().Select(j => j.ToString()).ToArray();
         var index = jobStrings.IndexOf(j => j == _triggerConfig.RequiredJob.ToString());
-        if (ImGui.Combo("##requiredJobCB", ref index, jobStrings, jobStrings.Count()))
+        if (ImGui.Combo("##requiredJobCB", ref index, jobStrings, jobStrings.Length))
         {
           _triggerConfig.RequiredJob = Enum.Parse<Job>(jobStrings[index]);
           _pluginConfig.Save();

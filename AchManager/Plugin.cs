@@ -13,17 +13,16 @@ public sealed class Plugin : IDalamudPlugin
 {
   public static ITextureProvider TextureProvider { get; private set; }
 
-  private DalamudPluginInterface PluginInterface { get; init; }
+  private IDalamudPluginInterface PluginInterface { get; init; }
   private ICommandManager CommandManager { get; init; }
   public static Configuration Configuration { get; private set; }
 
   public readonly WindowSystem WindowSystem = new("AchManager");
   private ConfigWindow ConfigWindow { get; init; }
 
-  public Plugin(
-      [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-      [RequiredVersion("1.0")] ICommandManager commandManager,
-      [RequiredVersion("1.0")] ITextureProvider textureProvider)
+  public Plugin(IDalamudPluginInterface pluginInterface,
+                ICommandManager commandManager,
+                ITextureProvider textureProvider)
   {
     PluginInterface = pluginInterface;
     CommandManager = commandManager;

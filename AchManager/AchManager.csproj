@@ -16,4 +16,14 @@
   <ItemGroup>
     <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="InteropGenerator.Runtime">
+      <HintPath>C:\Users\timst\AppData\Roaming\XIVLauncher\addon\Hooks\dev\InteropGenerator.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="DalamudPackager" Version="2.1.13" />
+  </ItemGroup>
 </Project>

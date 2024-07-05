@@ -103,10 +103,10 @@ namespace AchManager
                   {
                     InitialDuration = TimeSpan.FromSeconds(3),
                     Title = AchievementInfo?.Name ?? string.Empty,
-                    Type = Dalamud.Interface.Internal.Notifications.NotificationType.Success,
+                    Type = NotificationType.Success,
                     Content = $"{AchievementInfo?.Name}:\n{e.Progress}/{e.ProgressMax}",
-                    Progress = e.Progress / e.ProgressMax,
-                    IconTexture = Plugin.TextureProvider.GetIcon(AchievementInfo?.Icon ?? 0)
+                    Progress = e.Progress / e.ProgressMax,                 
+                    IconTexture = Plugin.TextureProvider.GetFromGameIcon(new Dalamud.Interface.Textures.GameIconLookup(AchievementInfo?.Icon ?? 0)).RentAsync().Result
                   };
 
                   var newNotif = Svc.NotificationManager.AddNotification(notif);
