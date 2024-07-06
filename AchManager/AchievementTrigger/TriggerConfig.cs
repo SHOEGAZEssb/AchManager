@@ -213,6 +213,16 @@ namespace AchManager.AchievementTrigger
     /// Sage 
     /// </summary>
     SGE = 40,
+
+    /// <summary>
+    /// Viper 
+    /// </summary>
+    VPR = 41,
+
+    /// <summary>
+    /// Pictomancer 
+    /// </summary>
+    PCT = 42,
   }
 
   [Serializable]
