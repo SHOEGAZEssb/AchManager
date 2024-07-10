@@ -11,6 +11,7 @@ namespace AchManager.AchievementTrigger
   [JsonSubtypes.KnownSubType(typeof(DutyCompletedTrigger), nameof(DutyCompletedTrigger))]
   [JsonSubtypes.KnownSubType(typeof(MarkKilledTrigger), nameof(MarkKilledTrigger))]
   [JsonSubtypes.KnownSubType(typeof(ChatMessageTrigger), nameof(ChatMessageTrigger))]
+  [JsonSubtypes.KnownSubType(typeof(QuestCompletedTrigger), nameof(QuestCompletedTrigger))]
   public abstract class AchievementUpdateTriggerBase : IDisposable
   {
     #region Properties

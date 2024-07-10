@@ -42,6 +42,7 @@ public class Configuration : IPluginConfiguration
     { TriggerType.FateCompleted, typeof(FateCompletedTrigger) },
     { TriggerType.MarkKilled, typeof(MarkKilledTrigger) },
     { TriggerType.ChatMessage, typeof(ChatMessageTrigger) },
+    { TriggerType.QuestCompleded, typeof(QuestCompletedTrigger) },
     { TriggerType.None, null }
   };
 

@@ -227,6 +227,8 @@ public class ConfigWindow : Window
       return TriggerType.MarkKilled.ToString();
     else if (trigger is ChatMessageTrigger)
       return TriggerType.ChatMessage.ToString();
+    else if (trigger is QuestCompletedTrigger)
+      return TriggerType.QuestCompleded.ToString();
     else
       throw new ArgumentException("unknown trigger type");
   }
@@ -247,6 +249,8 @@ public class ConfigWindow : Window
       return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
     else if (trigger.Config is ChatMessageTriggerConfig cmtc)
       return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
+    else if (trigger.Config is QuestCompletedTriggerConfig qctc)
+      return new QuestCompletedTriggerConfigWindow(qctc, pluginConfig, "Quest Completed Trigger Config");
     else
       return new DefaultConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
   }

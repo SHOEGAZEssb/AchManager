@@ -8,7 +8,8 @@ namespace AchManager.EventManager
         DutyCompleted,
         FateCompleted,
         MarkKilled,
-        ChatMessage
+        ChatMessage,
+        QuestCompleded
     }
 
     internal abstract class AchievementUpdateEventManagerBase<T> where T : EventArgs
