@@ -29,7 +29,6 @@ namespace AchManager.EventManager
 
     private IEnumerable<LeveWork>? _leveQuests;
     private IEnumerable<QuestWork>? _normalQuests;
-    private BeastReputationWork[]? _beastTribeQuests;
     private IEnumerable<DailyQuestWork>? _dailyQuests;
 
     #endregion Properties
