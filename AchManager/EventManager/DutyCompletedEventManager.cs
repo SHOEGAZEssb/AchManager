@@ -22,9 +22,18 @@ namespace AchManager.EventManager
 
     #endregion Singleton
 
+    #region Construction
+
     private DutyCompletedEventManager()
     {
       Svc.DutyState.DutyCompleted += DutyState_DutyCompleted;
+    }
+
+    #endregion Construction
+
+    public override void Dispose()
+    {
+      Svc.DutyState.DutyCompleted -= DutyState_DutyCompleted;
     }
 
     private void DutyState_DutyCompleted(object? sender, ushort e)

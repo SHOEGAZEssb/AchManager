@@ -1,3 +1,4 @@
+using AchManager.EventManager;
 using AchManager.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -53,12 +54,27 @@ public sealed class Plugin : IDalamudPlugin
     PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
   }
 
+  /// <summary>
+  /// Disposes the plugin.
+  /// </summary>
   public void Dispose()
   {
     WindowSystem.RemoveAllWindows();
-
     CommandManager.RemoveHandler("/ach");
+    DisposeEventManagers();
     ECommonsMain.Dispose();
+  }
+
+  /// <summary>
+  /// Disposes all event managers.
+  /// </summary>
+  private static void DisposeEventManagers()
+  {
+    ChatMessageEventManager.Instance.Dispose();
+    DutyCompletedEventManager.Instance.Dispose();
+    FateCompletedEventManager.Instance.Dispose();
+    MarkKilledEventManager.Instance.Dispose();
+    QuestCompletedEventManager.Instance.Dispose();
   }
 
   private void OnAchCommand(string command, string args)

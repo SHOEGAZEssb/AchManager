@@ -2,6 +2,7 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
+using System.Threading;
 
 namespace AchManager.EventManager
 {
@@ -22,11 +23,24 @@ namespace AchManager.EventManager
 
     #endregion Singleton
 
+    #region Properties
+
     private FateContext* _lastFate;
+
+    #endregion Properties
+
+    #region Construction
 
     private FateCompletedEventManager()
     {
       Svc.Framework.Update += Framework_Update;
+    }
+
+    #endregion Construction
+
+    public override void Dispose()
+    {
+      Svc.Framework.Update -= Framework_Update;
     }
 
     private void Framework_Update(Dalamud.Plugin.Services.IFramework framework)

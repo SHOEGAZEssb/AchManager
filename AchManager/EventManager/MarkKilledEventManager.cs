@@ -3,6 +3,7 @@ using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace AchManager.EventManager
 {
@@ -28,6 +29,8 @@ namespace AchManager.EventManager
 
     #endregion Singleton
 
+    #region Properties
+
     /// <summary>
     /// Cache for fetched notorious monsters from excel.
     /// </summary>
@@ -35,9 +38,20 @@ namespace AchManager.EventManager
 
     private IGameObject? _cachedTarget;
 
+    #endregion Properties
+
+    #region Construction
+
     private MarkKilledEventManager()
     {
       Svc.Framework.Update += Framework_Update;
+    }
+
+    #endregion Construction
+
+    public override void Dispose()
+    {
+      Svc.Framework.Update -= Framework_Update;
     }
 
     private void Framework_Update(Dalamud.Plugin.Services.IFramework framework)

@@ -25,7 +25,7 @@ namespace AchManager.EventManager
 
     #region Properties
 
-    private readonly CancellationToken _cancellationToken;
+    private readonly CancellationTokenSource _cancellationToken = new();
 
     private IEnumerable<LeveWork>? _leveQuests;
     private IEnumerable<QuestWork>? _normalQuests;
@@ -48,6 +48,11 @@ namespace AchManager.EventManager
     }
 
     #endregion Construction
+
+    public override void Dispose()
+    {
+      _cancellationToken.Cancel();
+    }
 
     private void UpdateQuests()
     {
