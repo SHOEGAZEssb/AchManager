@@ -2,6 +2,9 @@
 
 namespace AchManager.AchievementTrigger
 {
+  /// <summary>
+  /// Required current job for the trigger to trigger.
+  /// </summary>
   public enum Job
   {
     /// <summary>
@@ -225,6 +228,9 @@ namespace AchManager.AchievementTrigger
     PCT = 42,
   }
 
+  /// <summary>
+  /// Base configuration for every trigger.
+  /// </summary>
   [Serializable]
   public class TriggerConfig
   {

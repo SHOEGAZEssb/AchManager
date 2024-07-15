@@ -2,10 +2,16 @@
 
 namespace AchManager.EventManager
 {
+  /// <summary>
+  /// Event manager that informs about new chat messages.
+  /// </summary>
   internal class ChatMessageEventManager : AchievementUpdateEventManagerBase<ChatMessageEventArgs>
   {
     #region Singleton
 
+    /// <summary>
+    /// The unique instance of this event manager.
+    /// </summary>
     public static ChatMessageEventManager Instance
     {
       get
@@ -27,6 +33,9 @@ namespace AchManager.EventManager
 
     #endregion Construction
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Dispose()
     {
       Svc.Chat.ChatMessage -= Chat_ChatMessage;

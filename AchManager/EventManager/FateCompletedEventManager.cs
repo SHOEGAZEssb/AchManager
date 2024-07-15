@@ -2,15 +2,20 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Fate;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using System;
-using System.Threading;
 
 namespace AchManager.EventManager
 {
+  /// <summary>
+  /// Event manager that informs about when a fate has been completed.
+  /// </summary>
 
   internal unsafe class FateCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
   {
     #region Singleton
 
+    /// <summary>
+    /// The unique instance of this event manager.
+    /// </summary>
     public static FateCompletedEventManager Instance
     {
       get
@@ -38,6 +43,9 @@ namespace AchManager.EventManager
 
     #endregion Construction
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Dispose()
     {
       Svc.Framework.Update -= Framework_Update;

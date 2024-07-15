@@ -4,12 +4,15 @@ using System;
 namespace AchManager.EventManager
 {
   /// <summary>
-  /// Trigger that gets fired when a duty successfully completes.
+  /// Event manager that informs about when a duty successfully completes.
   /// </summary>
   internal class DutyCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
   {
     #region Singleton
 
+    /// <summary>
+    /// The unique instance of this event manager.
+    /// </summary>
     public static DutyCompletedEventManager Instance
     {
       get
@@ -31,6 +34,9 @@ namespace AchManager.EventManager
 
     #endregion Construction
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Dispose()
     {
       Svc.DutyState.DutyCompleted -= DutyState_DutyCompleted;

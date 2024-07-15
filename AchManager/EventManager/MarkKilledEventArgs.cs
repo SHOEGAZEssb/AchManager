@@ -3,18 +3,43 @@ using System.Collections.Generic;
 
 namespace AchManager.EventManager
 {
+  /// <summary>
+  /// Rank of the killed mark.
+  /// </summary>
   public enum KilledEnemyRank
   {
+    /// <summary>
+    /// C rank.
+    /// </summary>
     C,
+
+    /// <summary>
+    /// B rank.
+    /// </summary>
     B,
+
+    /// <summary>
+    /// A rank.
+    /// </summary>
     A,
+
+    /// <summary>
+    /// S rank.
+    /// </summary>
     S,
   }
 
+  /// <summary>
+  /// Event args for the <see cref="MarkKilledEventManager"/>.
+  /// </summary>
+  /// <param name="rank"></param>
   internal class MarkKilledEventArgs(KilledEnemyRank rank) : EventArgs
   {
     #region Properties
 
+    /// <summary>
+    /// Rank of the killed mark.
+    /// </summary>
     public KilledEnemyRank Rank { get; } = rank;
 
     private static readonly Dictionary<byte, KilledEnemyRank> _rankBytes = new()
@@ -30,6 +55,10 @@ namespace AchManager.EventManager
 
     #region Construction
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="rank">The rank as byte.</param>
     public MarkKilledEventArgs(byte rank)
       : this(_rankBytes[rank])
     { }

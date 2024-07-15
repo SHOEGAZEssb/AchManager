@@ -5,6 +5,14 @@ using System.Linq;
 
 namespace AchManager.AchievementTrigger
 {
+  /// <summary>
+  /// Configuration window for a <see cref="QuestCompletedTrigger"/>.
+  /// </summary>
+  /// <param name="config">The configuration of the trigger.</param>
+  /// <param name="pluginConfig">The current plugin configuration.</param>
+  /// <param name="name">Name of the window.</param>
+  /// <param name="flags">ImGui flags for the window.</param>
+  /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
   internal class QuestCompletedTriggerConfigWindow(QuestCompletedTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
     : DefaultConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
   {
@@ -14,6 +22,9 @@ namespace AchManager.AchievementTrigger
 
     #endregion Properties
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override void DrawChildContent()
     {
       ImGui.Text("Required quest type: ");

@@ -3,12 +3,11 @@ using ECommons.DalamudServices;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace AchManager.EventManager
 {
   /// <summary>
-  /// Event manager for when marks are killed.
+  /// Event manager that informs when a mark is killed.
   /// </summary>
   internal class MarkKilledEventManager : AchievementUpdateEventManagerBase<MarkKilledEventArgs>
   {
@@ -49,6 +48,9 @@ namespace AchManager.EventManager
 
     #endregion Construction
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Dispose()
     {
       Svc.Framework.Update -= Framework_Update;

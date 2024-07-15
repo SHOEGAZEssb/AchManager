@@ -6,6 +6,9 @@ using System;
 
 namespace AchManager.AchievementTrigger
 {
+  /// <summary>
+  /// Base class for all achievement triggers.
+  /// </summary>
   [JsonConverter(typeof(JsonSubtypes), nameof(TriggerIdentifier))]
   [JsonSubtypes.KnownSubType(typeof(FateCompletedTrigger), nameof(FateCompletedTrigger))]
   [JsonSubtypes.KnownSubType(typeof(DutyCompletedTrigger), nameof(DutyCompletedTrigger))]
@@ -42,6 +45,9 @@ namespace AchManager.AchievementTrigger
 
     #region Construction
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     protected AchievementUpdateTriggerBase()
     {
       Init();
@@ -49,8 +55,14 @@ namespace AchManager.AchievementTrigger
 
     #endregion Construction
 
+    /// <summary>
+    /// Disposes this trigger.
+    /// </summary>
     public abstract void Dispose();
 
+    /// <summary>
+    /// Fires this trigger if requirements are met.
+    /// </summary>
     protected void FireOnTrigger()
     {
       if (Config.RequiredJob == Job.Any || (int)Player.Job == (int)Config.RequiredJob)
@@ -63,6 +75,9 @@ namespace AchManager.AchievementTrigger
       }
     }
 
+    /// <summary>
+    /// Initializes this trigger.
+    /// </summary>
     protected abstract void Init();
   }
 }

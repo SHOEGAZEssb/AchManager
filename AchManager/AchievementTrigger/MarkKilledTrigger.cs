@@ -11,37 +11,45 @@ namespace AchManager.AchievementTrigger
   {
     #region Properties
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override string TriggerIdentifier => nameof(MarkKilledTrigger);
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override TriggerConfig Config => TypedConfig;    
 
     /// <summary>
-    /// Configuration for this trigger.
+    /// The specific configuration for this trigger.
     /// </summary>
     public MarkKilledTriggerConfig TypedConfig { get; } = new MarkKilledTriggerConfig();
 
     #endregion Properties
 
     /// <summary>
-    /// Disposes this trigger.
-    /// Unlinks from the <see cref="MarkKilledEventManager"/>.
+    /// <inheritdoc/>
     /// </summary>
     public override void Dispose()
     {
-      MarkKilledEventManager.Instance.OnEvent -= Instance_OnTrigger;
+      MarkKilledEventManager.Instance.OnEvent -= MarkKilledEventManager_OnEvent;
       GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override void Init()
     {
       if (_isInitialized)
         return;
 
-      MarkKilledEventManager.Instance.OnEvent += Instance_OnTrigger;
+      MarkKilledEventManager.Instance.OnEvent += MarkKilledEventManager_OnEvent;
       _isInitialized = true;
     }
 
-    private void Instance_OnTrigger(object? sender, MarkKilledEventArgs e)
+    private void MarkKilledEventManager_OnEvent(object? sender, MarkKilledEventArgs e)
     {
       if (TypedConfig.RequiredRank == Rank.All || e.Rank.ToString() == TypedConfig.RequiredRank.ToString())
         FireOnTrigger();

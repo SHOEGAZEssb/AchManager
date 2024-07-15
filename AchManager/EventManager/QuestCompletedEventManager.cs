@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace AchManager.EventManager
 {
+  /// <summary>
+  /// Event manager that informs about completed quests.
+  /// </summary>
   internal class QuestCompletedEventManager : AchievementUpdateEventManagerBase<QuestCompletedEventArgs>
   {
     #region Singleton
 
+    /// <summary>
+    /// The unique instance of this event manager.
+    /// </summary>
     public static QuestCompletedEventManager Instance
     {
       get
@@ -49,6 +55,9 @@ namespace AchManager.EventManager
 
     #endregion Construction
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Dispose()
     {
       _cancellationToken.Cancel();
