@@ -4,9 +4,10 @@ using System.Linq;
 using AchManager.AchievementTrigger;
 using AchManager.EventManager;
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using ECommons.DalamudServices;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace AchManager.Windows;
 
@@ -15,8 +16,8 @@ public class ConfigWindow : Window
   private readonly WindowSystem _windowSystem;
   private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
-                                                               .Where(a => !string.IsNullOrEmpty(a.Name) &&
-                                                                           (a.AchievementCategory.Value?.AchievementKind.Value?.Name ?? string.Empty) != "Legacy")
+                                                               .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
+                                                                           (a.AchievementCategory.Value.AchievementKind.Value.Name) != "Legacy")
                                                                ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
@@ -91,8 +92,8 @@ public class ConfigWindow : Window
       if (string.IsNullOrEmpty(_allAchievementsSearchText))
         _filteredAllAchievements = _allAchievements;
       else
-        _filteredAllAchievements = _allAchievements.Where(a => a.Name.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
-                                                               a.Description.RawString.Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
+        _filteredAllAchievements = _allAchievements.Where(a => a.Name.ToString().Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                                                               a.Description.ToString().Contains(_allAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
       _fullListNeedsSorting = true;
     }
 
@@ -124,13 +125,13 @@ public class ConfigWindow : Window
           ImGui.TableNextRow();
 
           ImGui.TableNextColumn();
-          ImGui.Text(ach.Name);
+          ImGui.Text(ach.Name.ToString());
 
           ImGui.TableNextColumn();
-          ImGui.Text(ach.Description);
+          ImGui.Text(ach.Description.ToString());
 
           ImGui.TableNextColumn();
-          ImGui.Text(ach.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
+          ImGui.Text(ach.AchievementCategory.Value.AchievementKind.Value.Name.ToString());
 
           ImGui.TableNextColumn();
           bool watched = Configuration.WatchedAchievements.ContainsKey(ach.RowId);
@@ -175,13 +176,13 @@ public class ConfigWindow : Window
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
-        ImGui.Text(ach.AchievementInfo.Name);
+        ImGui.Text(ach.AchievementInfo.Name.ToString());
 
         ImGui.TableNextColumn();
-        ImGui.Text(ach.AchievementInfo.Description);
+        ImGui.Text(ach.AchievementInfo.Description.ToString());
 
         ImGui.TableNextColumn();
-        ImGui.Text(ach.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name ?? "");
+        ImGui.Text(ach.AchievementInfo.AchievementCategory.Value.AchievementKind.Value.Name.ToString());
 
         ImGui.TableNextColumn();
         ImGui.Text($"{ach.Progress} / {ach.ProgressMax}");
@@ -266,16 +267,16 @@ public class ConfigWindow : Window
       switch ((AchievementListColumns)columnSpecs.ColumnUserID)
       {
         case AchievementListColumns.Name:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Name.RawString)
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.Name.RawString);
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Name.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.Name.ToString());
           break;
         case AchievementListColumns.Description:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Description.RawString)
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.Description.RawString);
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Description.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.Description.ToString());
           break;
         case AchievementListColumns.Category:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "")
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "");
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementCategory.Value.AchievementKind.Value.Name.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementCategory.Value.AchievementKind.Value.Name.ToString());
           break;
         case AchievementListColumns.Watch:
           sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId)) 
@@ -300,16 +301,16 @@ public class ConfigWindow : Window
       switch ((AchievementListColumns)columnSpecs.ColumnUserID)
       {
         case AchievementListColumns.Name:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Name.RawString)
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Name.RawString);
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Name.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Name.ToString());
           break;
         case AchievementListColumns.Description:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Description.RawString)
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Description.RawString);
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.Description.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.Description.ToString());
           break;
         case AchievementListColumns.Category:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "")
-                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.AchievementCategory.Value?.AchievementKind.Value?.Name.RawString ?? "");
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.AchievementInfo.AchievementCategory.ToString())
+                                                                                            : sortedAchievementList.OrderByDescending(a => a.AchievementInfo.AchievementCategory.ToString());
           break;
         case AchievementListColumns.Progress:
           sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => a.Progress)

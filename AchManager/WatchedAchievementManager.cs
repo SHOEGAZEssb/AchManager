@@ -31,6 +31,11 @@ namespace AchManager
       Svc.ClientState.Logout += ClientState_Logout;
     }
 
+    private void ClientState_Logout1(int type, int code)
+    {
+      throw new NotImplementedException();
+    }
+
     #endregion Construction
 
     public void AddWatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
@@ -80,7 +85,7 @@ namespace AchManager
       InitializeAchievements();
     }
 
-    private void ClientState_Logout()
+    private void ClientState_Logout(int type, int code)
     {
       foreach (var achievement in _achievements)
         achievement.Deinitialize();

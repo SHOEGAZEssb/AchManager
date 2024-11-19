@@ -1,6 +1,6 @@
 using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -66,11 +66,11 @@ namespace AchManager.EventManager
         if (prevTarget.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)
         {
           var nm = GetNotoriousMonster(prevTarget.DataId);
-          if (nm != null)
+          if (nm.HasValue)
           {
             Svc.Log.Debug($"{nameof(MarkKilledEventManager)}: Fire");
             _cachedTarget = prevTarget;
-            FireOnEvent(new MarkKilledEventArgs(nm.Rank));
+            FireOnEvent(new MarkKilledEventArgs(nm.Value.Rank));
           }
         }
       }
@@ -89,7 +89,7 @@ namespace AchManager.EventManager
       if (_notoriousMonstersCache.TryGetValue(dataId, out var nm))
         return nm;
 
-      var monster = Svc.Data.GetExcelSheet<NotoriousMonster>()?.FirstOrDefault(n => n.BNpcBase.Row == dataId);
+      var monster = Svc.Data.GetExcelSheet<NotoriousMonster>()?.FirstOrDefault(n => n.BNpcBase.RowId == dataId);
       _notoriousMonstersCache[dataId] = monster;
 
       return monster;
