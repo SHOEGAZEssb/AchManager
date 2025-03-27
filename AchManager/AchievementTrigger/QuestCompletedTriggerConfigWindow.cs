@@ -32,7 +32,7 @@ namespace AchManager.AchievementTrigger
 
       var enumValues = Enum.GetValues<RequiredQuestType>();
       var index = Array.IndexOf(enumValues, _config.RequiredQuestType);
-      if (ImGui.Combo("##requiredQuestTypeCB", ref index, enumValues.Select(r => r.ToString()).ToArray(), enumValues.Length))
+      if (ImGui.Combo("##requiredQuestTypeCB", ref index, [.. enumValues.Select(r => r.ToString())], enumValues.Length))
       {
         _config.RequiredQuestType = enumValues[index];
         _pluginConfig.Save();

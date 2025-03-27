@@ -32,7 +32,7 @@ namespace AchManager.AchievementTrigger
 
       var enumValues = Enum.GetValues<Rank>();
       var index = Array.IndexOf(enumValues, _config.RequiredRank);
-      if (ImGui.Combo("##mktConfigRank", ref index, enumValues.Select(r => r.ToString()).ToArray(), enumValues.Length))
+      if (ImGui.Combo("##mktConfigRank", ref index, [.. enumValues.Select(r => r.ToString())], enumValues.Length))
       {
         _config.RequiredRank = enumValues[index];
         _pluginConfig.Save();

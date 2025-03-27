@@ -191,7 +191,7 @@ public class ConfigWindow : Window
         int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Trigger));
         if (ImGui.Combo($"##ach_{ach.WatchedID}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
         {
-          Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, (TriggerType)Enum.Parse(typeof(TriggerType), _triggerTypeStrings[index]));
+          Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, Enum.Parse<TriggerType>(_triggerTypeStrings[index]));
         }
 
         ImGui.TableNextColumn();
@@ -236,7 +236,7 @@ public class ConfigWindow : Window
 
   private static string[] GetTriggerTypeStrings()
   {
-    var enumValues = Enum.GetValues(typeof(TriggerType));
+    var enumValues = Enum.GetValues<TriggerType>();
     var strings = new string[enumValues.Length];
     for (int i = 0; i < enumValues.Length; i++)
       strings[i] = enumValues.GetValue(i)?.ToString() ?? string.Empty;

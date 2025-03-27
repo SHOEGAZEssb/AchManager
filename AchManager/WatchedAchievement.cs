@@ -1,5 +1,6 @@
 using AchManager.AchievementTrigger;
 using Dalamud.Interface.ImGuiNotification;
+using Dalamud.Interface.Textures;
 using ECommons.DalamudServices;
 using System;
 using System.Collections.Generic;
@@ -106,7 +107,7 @@ namespace AchManager
                     Type = NotificationType.Success,
                     Content = $"{AchievementInfo.Name}:\n{e.Progress}/{e.ProgressMax}",
                     Progress = e.Progress / e.ProgressMax,                 
-                    IconTexture = Plugin.TextureProvider.GetFromGameIcon(new Dalamud.Interface.Textures.GameIconLookup(AchievementInfo.Icon)).RentAsync().Result
+                    IconTexture = (ISharedImmediateTexture)Plugin.TextureProvider.GetFromGameIcon(new GameIconLookup(AchievementInfo.Icon)).RentAsync().Result
                   };
 
                   var newNotif = Svc.NotificationManager.AddNotification(notif);
@@ -133,7 +134,6 @@ namespace AchManager
     private void LastNotification_Dismiss(Dalamud.Interface.ImGuiNotification.EventArgs.INotificationDismissArgs obj)
     {
       obj.Notification.Dismiss -= LastNotification_Dismiss;
-      obj.Notification.IconTexture?.Dispose();
       _activeNotifications.Remove(obj.Notification);
     }
 
