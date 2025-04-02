@@ -106,8 +106,8 @@ namespace AchManager
                     Title = AchievementInfo.Name.ToString(),
                     Type = NotificationType.Success,
                     Content = $"{AchievementInfo.Name}:\n{e.Progress}/{e.ProgressMax}",
-                    Progress = e.Progress / e.ProgressMax,                 
-                    IconTexture = (ISharedImmediateTexture)Plugin.TextureProvider.GetFromGameIcon(new GameIconLookup(AchievementInfo.Icon)).RentAsync().Result
+                    Progress = e.Progress / e.ProgressMax,
+                    IconTexture = Plugin.TextureProvider.GetFromGameIcon(new GameIconLookup(AchievementInfo.Icon))
                   };
 
                   var newNotif = Svc.NotificationManager.AddNotification(notif);
