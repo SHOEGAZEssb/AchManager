@@ -32,7 +32,7 @@ public class ConfigWindow : Window
                     | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
                     | ImGuiTableFlags.SizingFixedFit;
 
-  private DefaultConfigWindow? _currentConfigWindow;
+  private DefaultTriggerConfigWindow? _currentConfigWindow;
 
   private bool _fullListNeedsSorting = true;
   private bool _watchedListNeedsSorting = true;
@@ -244,7 +244,7 @@ public class ConfigWindow : Window
     return strings;
   }
 
-  private static DefaultConfigWindow GetConfigWindowForTrigger(AchievementUpdateTriggerBase trigger, Configuration pluginConfig)
+  private static DefaultTriggerConfigWindow GetConfigWindowForTrigger(AchievementUpdateTriggerBase trigger, Configuration pluginConfig)
   {
     if (trigger.Config is MarkKilledTriggerConfig mktc)
       return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
@@ -253,7 +253,7 @@ public class ConfigWindow : Window
     else if (trigger.Config is QuestCompletedTriggerConfig qctc)
       return new QuestCompletedTriggerConfigWindow(qctc, pluginConfig, "Quest Completed Trigger Config");
     else
-      return new DefaultConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
+      return new DefaultTriggerConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
   }
 
   private static IEnumerable<Achievement> SortAchievementList(IEnumerable<Achievement> achievements, ImGuiTableSortSpecsPtr sortSpecs)
