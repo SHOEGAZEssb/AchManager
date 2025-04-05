@@ -60,7 +60,7 @@ namespace AchManager.EventManager
     {
       // check if previous target is dead
       var prevTarget = Svc.Targets.PreviousTarget;
-      if (prevTarget != null && prevTarget.IsDead && prevTarget != _cachedTarget)
+      if (prevTarget != null && prevTarget.IsDead && prevTarget.Address != _cachedTarget?.Address)
       {
         // check if target was a mark
         if (prevTarget.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.BattleNpc)
@@ -89,10 +89,16 @@ namespace AchManager.EventManager
       if (_notoriousMonstersCache.TryGetValue(dataId, out var nm))
         return nm;
 
-      var monster = Svc.Data.GetExcelSheet<NotoriousMonster>()?.FirstOrDefault(n => n.BNpcBase.RowId == dataId);
-      _notoriousMonstersCache[dataId] = monster;
+      foreach (var monster in Svc.Data.GetExcelSheet<NotoriousMonster>())
+      {
+        if (monster.BNpcBase.RowId == dataId)
+        {
+          _notoriousMonstersCache[dataId] = monster;
+          return monster;
+        }
+      }
 
-      return monster;
+      return null;
     }
   }
 }
