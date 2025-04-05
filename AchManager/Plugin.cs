@@ -70,10 +70,8 @@ public sealed class Plugin : IDalamudPlugin
     });
 
     PluginInterface.UiBuilder.Draw += DrawUI;
-
-    // This adds a button to the plugin installer entry of this plugin which allows
-    // to toggle the display status of the configuration ui
     PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+    PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUI;
   }
 
   /// <summary>
