@@ -15,6 +15,8 @@ public class Configuration : IPluginConfiguration
 {
   public int Version { get; set; } = 0;
 
+  public bool PreventChatEventManagerLogSpam { get; set; } = true;
+
   /// <summary>
   /// List of watched achievements.
   /// </summary>

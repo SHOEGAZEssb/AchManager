@@ -77,6 +77,12 @@ public class ConfigWindow : Window
         DrawWatchedAchievementList();
         ImGui.EndTabItem();
       }
+
+      if (ImGui.BeginTabItem("Settings"))
+      {
+        DrawSettings();
+        ImGui.EndTabItem();
+      }
     }
   }
 
@@ -112,7 +118,7 @@ public class ConfigWindow : Window
         _filteredAllAchievements = SortAchievementList(_filteredAllAchievements, sortSpecs);
         sortSpecs.SpecsDirty = false;
         _fullListNeedsSorting = false;
-      }  
+      }
 
       unsafe
       {
@@ -190,9 +196,7 @@ public class ConfigWindow : Window
         ImGui.TableNextColumn();
         int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Trigger));
         if (ImGui.Combo($"##ach_{ach.WatchedID}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
-        {
           Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, Enum.Parse<TriggerType>(_triggerTypeStrings[index]));
-        }
 
         ImGui.TableNextColumn();
         if (ach.Trigger != null && ImGui.Button($"Config##ach_{ach.WatchedID}_openConfig"))
@@ -207,12 +211,26 @@ public class ConfigWindow : Window
 
         ImGui.TableNextColumn();
         if (ImGui.Button($"Remove##ach_{ach.WatchedID}_removeWatched"))
-        {
           Configuration.RemoveWatchedAchievement(ach.WatchedID);
-        }
       }
 
       ImGui.EndTable();
+    }
+  }
+
+  private static void DrawSettings()
+  {
+    bool preventLogSpam = Plugin.Configuration.PreventChatEventManagerLogSpam;
+    if (ImGui.Checkbox("Prevent ChatEventManager Log Spam", ref preventLogSpam))
+    {
+      Plugin.Configuration.PreventChatEventManagerLogSpam = preventLogSpam;
+      Plugin.Configuration.Save();
+    }
+    if (ImGui.IsItemHovered())
+    {
+      ImGui.BeginTooltip();
+      ImGui.SetTooltip("If checked, the ChatEventManager will not print log messages to the Dalamud log");
+      ImGui.EndTooltip();
     }
   }
 
@@ -279,7 +297,7 @@ public class ConfigWindow : Window
                                                                                             : sortedAchievementList.OrderByDescending(a => a.AchievementCategory.Value.AchievementKind.Value.Name.ToString());
           break;
         case AchievementListColumns.Watch:
-          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId)) 
+          sortedAchievementList = columnSpecs.SortDirection == ImGuiSortDirection.Ascending ? sortedAchievementList.OrderBy(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId))
                                                                                             : sortedAchievementList.OrderByDescending(a => Plugin.Configuration.WatchedAchievements.ContainsKey(a.RowId));
           break;
         default:

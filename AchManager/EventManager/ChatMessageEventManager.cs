@@ -43,7 +43,9 @@ namespace AchManager.EventManager
 
     private void Chat_ChatMessage(Dalamud.Game.Text.XivChatType type, int timestamp, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
-      Svc.Log.Debug($"{nameof(ChatMessageEventManager)}: Fire");
+      if (!Plugin.Configuration.PreventChatEventManagerLogSpam)
+        Svc.Log.Debug($"{nameof(ChatMessageEventManager)}: Fire");
+
       FireOnEvent(new ChatMessageEventArgs(message.TextValue));
     }
   }
