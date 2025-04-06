@@ -5,6 +5,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using ECommons.DalamudServices;
 using System.IO;
 
 namespace AchManager;
@@ -106,7 +107,12 @@ public sealed class Plugin : IDalamudPlugin
 
   private void OnAchFetchCommand(string command, string args)
   {
-    Configuration.FetchProgress();
+    foreach (var ach in Configuration.WatchedAchievements.Keys)
+    {
+      AchievementHookManager.RequestProgess(ach);
+    }
+
+    Svc.Chat.Print("Achievement Progress fetched");
   }
 
   private void DrawUI() => WindowSystem.Draw();

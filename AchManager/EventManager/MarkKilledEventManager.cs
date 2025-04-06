@@ -2,7 +2,6 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.DalamudServices;
 using Lumina.Excel.Sheets;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AchManager.EventManager
 {
@@ -33,7 +32,7 @@ namespace AchManager.EventManager
     /// <summary>
     /// Cache for fetched notorious monsters from excel.
     /// </summary>
-    private static readonly Dictionary<uint, NotoriousMonster?> _notoriousMonstersCache = [];
+    private static readonly Dictionary<uint, NotoriousMonster> _notoriousMonstersCache = [];
 
     private IGameObject? _cachedTarget;
 

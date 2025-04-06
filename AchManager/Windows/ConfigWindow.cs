@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using AchManager.AchievementTrigger;
 using AchManager.EventManager;
 using Dalamud.Interface.Windowing;
-using Dalamud.Utility;
 using ECommons.DalamudServices;
 using ImGuiNET;
 using Lumina.Excel.Sheets;
@@ -28,6 +28,11 @@ public class ConfigWindow : Window
 
   private static readonly ImGuiTableFlags _tableFlags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable
                     | ImGuiTableFlags.Sortable
+                    | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
+                    | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
+                    | ImGuiTableFlags.SizingFixedFit;
+
+  private static readonly ImGuiTableFlags _sessionStatsTableFlags = ImGuiTableFlags.Resizable
                     | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
                     | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
                     | ImGuiTableFlags.SizingFixedFit;
@@ -75,6 +80,12 @@ public class ConfigWindow : Window
       if (ImGui.BeginTabItem("Watched Achievements"))
       {
         DrawWatchedAchievementList();
+        ImGui.EndTabItem();
+      }
+
+      if (ImGui.BeginTabItem("Session Stats"))
+      {
+        DrawSessionStats();
         ImGui.EndTabItem();
       }
 
@@ -215,6 +226,64 @@ public class ConfigWindow : Window
       }
 
       ImGui.EndTable();
+    }
+  }
+
+  private void DrawSessionStats()
+  {
+    if (Configuration.SessionStats.Count == 0)
+    {
+      string text = "No progress so far :(";
+      Vector2 contentSize = ImGui.GetContentRegionAvail();
+      Vector2 textSize = ImGui.CalcTextSize(text);
+
+      // Center X and Y
+      float textX = (contentSize.X - textSize.X) * 0.5f;
+      float textY = (contentSize.Y - textSize.Y) * 0.5f;
+
+      // Move cursor to centered position
+      ImGui.SetCursorPos(new Vector2(textX, textY));
+      ImGui.Text(text);
+    }
+    else
+    {
+      var text = "Here's your progress today! Keep up the great work!!";
+      Vector2 contentSize = ImGui.GetContentRegionAvail();
+      Vector2 textSize = ImGui.CalcTextSize(text);
+      float textX = (contentSize.X - textSize.X) * 0.5f;
+      ImGui.SetCursorPosX(textX);
+      ImGui.Text(text);
+
+      if (ImGui.BeginTable("##sessionStatsTable", 3, _sessionStatsTableFlags))
+      {
+        ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+        ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
+        ImGui.TableSetupColumn("Progress", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Progress);
+        ImGui.TableSetupScrollFreeze(0, 1);
+        ImGui.TableHeadersRow();
+
+        foreach (var ach in Configuration.SessionStats)
+        {
+          var achInfo = _allAchievements.First(a => a.RowId == ach.Key);
+
+          ImGui.TableNextRow();
+
+          ImGui.TableNextColumn();
+          ImGui.Text(achInfo.Name.ToString());
+
+          ImGui.TableNextColumn();
+          ImGui.Text(achInfo.Description.ToString());
+
+          ImGui.TableNextColumn();
+          ImGui.Text($"{ach.Value.initial} -> {ach.Value.current} / {ach.Value.max} ");
+          ImGui.SameLine();
+          var progress = ach.Value.current - ach.Value.initial;
+          double percentage = progress * 100.0 / ach.Value.max;
+          ImGui.TextColored(new Vector4(0.6f, 1.0f, 0.6f, 1.0f), $"( +{progress} / +{percentage:F2}%% )");
+        }
+
+        ImGui.EndTable();
+      }
     }
   }
 

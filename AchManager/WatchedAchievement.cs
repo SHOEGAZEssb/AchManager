@@ -90,6 +90,15 @@ namespace AchManager
           {
             if (Progress != null)
             {
+              // sessions stats
+              (uint initial, uint current, uint max) newValue;
+              if (Configuration.SessionStats.TryGetValue(WatchedID, out (uint initial, uint current, uint max) currentValue))
+                newValue = (currentValue.initial, e.Progress, e.ProgressMax);
+              else
+                newValue = (Progress.Value, e.Progress, e.ProgressMax);
+
+              Configuration.SessionStats[WatchedID] = newValue;
+
               _progressSteps++;
               if ((!Trigger?.Config.TriggerEveryXTimes ?? true) || _progressSteps >= Trigger?.Config.TriggerEveryCount || e.Progress == e.ProgressMax)
               {

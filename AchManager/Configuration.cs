@@ -30,7 +30,6 @@ public class Configuration : IPluginConfiguration
   /// </summary>
   internal Dictionary<uint, AchievementUpdateTriggerBase?> WatchedAchievements { get; set; } = [];
 
-  // the below exist just to make saving less cumbersome
   [NonSerialized]
   private IDalamudPluginInterface? PluginInterface;
 
@@ -47,6 +46,9 @@ public class Configuration : IPluginConfiguration
     { TriggerType.QuestCompleded, typeof(QuestCompletedTrigger) },
     { TriggerType.None, null }
   };
+
+  [JsonIgnore]
+  public static Dictionary<uint, (uint initial, uint current, uint max)> SessionStats { get; } = [];
 
   public void Initialize(IDalamudPluginInterface pluginInterface)
   {
@@ -122,16 +124,6 @@ public class Configuration : IPluginConfiguration
       _achievementManager!.SetTriggerTypeForWatchedAchievement(id, trigger);
       Save();
     }
-  }
-
-  public void FetchProgress()
-  {
-    foreach (var ach in WatchedAchievements.Keys)
-    {
-      AchievementHookManager.RequestProgess(ach);
-    }
-
-    Svc.Chat.Print("Achievement Progress fetched");
   }
 
   private void InitializeManager()
