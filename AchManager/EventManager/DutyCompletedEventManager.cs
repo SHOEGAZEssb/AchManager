@@ -1,12 +1,11 @@
 ﻿using ECommons.DalamudServices;
-using System;
 
 namespace AchManager.EventManager
 {
   /// <summary>
   /// Event manager that informs about when a duty successfully completes.
   /// </summary>
-  internal class DutyCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
+  internal class DutyCompletedEventManager : AchievementUpdateEventManagerBase<DutyCompletedEventArgs>
   {
     #region Singleton
 
@@ -44,8 +43,8 @@ namespace AchManager.EventManager
 
     private void DutyState_DutyCompleted(object? sender, ushort e)
     {
-      Svc.Log.Debug($"{nameof(DutyCompletedEventManager)}: Fire");
-      FireOnEvent(EventArgs.Empty);
+      Svc.Log.Debug($"{nameof(DutyCompletedEventManager)}: Fire ({e})");
+      FireOnEvent(new DutyCompletedEventArgs(e));
     }
   }
 }

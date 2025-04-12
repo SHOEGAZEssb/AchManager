@@ -335,6 +335,8 @@ public class ConfigWindow : Window
   {
     if (trigger.Config is MarkKilledTriggerConfig mktc)
       return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
+    else if (trigger.Config is DutyCompletedTriggerConfig dctc)
+      return new DutyCompletedTriggerConfigWindow(dctc, pluginConfig, "Duty Completed Trigger Config");
     else if (trigger.Config is ChatMessageTriggerConfig cmtc)
       return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
     else if (trigger.Config is QuestCompletedTriggerConfig qctc)

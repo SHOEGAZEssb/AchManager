@@ -1,5 +1,9 @@
 ﻿using AchManager.EventManager;
+using ECommons.DalamudServices;
+using Lumina.Excel.Sheets;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 
 namespace AchManager.AchievementTrigger
 {
@@ -11,10 +15,23 @@ namespace AchManager.AchievementTrigger
   {
     #region Properties
 
+    private static readonly ContentFinderCondition[] _duties = Svc.Data.GameData.GetExcelSheet<ContentFinderCondition>()?.ToArray() ?? [];
+
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
     public override string TriggerIdentifier => nameof(DutyCompletedTrigger);
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    [JsonIgnore]
+    public override TriggerConfig Config => TypedConfig;
+
+    /// <summary>
+    /// The specific configuration for this trigger.
+    /// </summary>
+    public DutyCompletedTriggerConfig TypedConfig { get; } = new DutyCompletedTriggerConfig();
 
     #endregion Properties
 
@@ -39,9 +56,11 @@ namespace AchManager.AchievementTrigger
       _isInitialized = true;
     }
 
-    private void DutyCompletedEventManager_OnEvent(object? sender, EventArgs e)
+    private void DutyCompletedEventManager_OnEvent(object? sender, DutyCompletedEventArgs e)
     {
-      FireOnTrigger();
+      if (TypedConfig.RequiredContentTypes.Contains(ContentType.All)
+          || TypedConfig.RequiredContentTypes.Select(t => (uint)t).Contains(_duties.First(d => d.TerritoryType.RowId == e.TerritoryID).ContentType.RowId))
+        FireOnTrigger();
     }
   }
 }

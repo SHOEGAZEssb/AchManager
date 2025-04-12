@@ -1,4 +1,5 @@
-﻿using FFXIVClientStructs.FFXIV.Application.Network.WorkDefinitions;
+﻿using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Application.Network.WorkDefinitions;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,10 @@ namespace AchManager.EventManager
         _dailyQuests = dailies;
 
         if (completedQuestTypes.HasValue)
+        {
+          Svc.Log.Debug($"{nameof(QuestCompletedEventManager)}: Fire ({completedQuestTypes.Value})");
           FireOnEvent(new QuestCompletedEventArgs(completedQuestTypes.Value));
+        }
       }
     }
 

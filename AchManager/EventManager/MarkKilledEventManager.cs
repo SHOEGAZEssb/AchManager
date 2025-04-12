@@ -67,7 +67,7 @@ namespace AchManager.EventManager
           var nm = GetNotoriousMonster(prevTarget.DataId);
           if (nm.HasValue)
           {
-            Svc.Log.Debug($"{nameof(MarkKilledEventManager)}: Fire");
+            Svc.Log.Debug($"{nameof(MarkKilledEventManager)}: Fire ({nm.Value.BNpcName})");
             _cachedTarget = prevTarget;
             FireOnEvent(new MarkKilledEventArgs(nm.Value.Rank));
           }

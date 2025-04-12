@@ -32,7 +32,7 @@ namespace AchManager.AchievementTrigger
     /// <summary>
     /// The configuration of this trigger.
     /// </summary>
-    public virtual TriggerConfig Config { get; } = new TriggerConfig();
+    public virtual TriggerConfig Config { get; }
 
     /// <summary>
     /// Safety bool to stop double initialization.
@@ -50,6 +50,7 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     protected AchievementUpdateTriggerBase()
     {
+      Config = new TriggerConfig();
       Init();
     }
 

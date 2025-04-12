@@ -1,4 +1,5 @@
 ﻿using AchManager.EventManager;
+using Newtonsoft.Json;
 using System;
 
 namespace AchManager.AchievementTrigger
@@ -19,6 +20,7 @@ namespace AchManager.AchievementTrigger
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
+    [JsonIgnore]
     public override TriggerConfig Config => TypedConfig;    
 
     /// <summary>
