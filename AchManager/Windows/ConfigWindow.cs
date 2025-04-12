@@ -116,9 +116,9 @@ public class ConfigWindow : Window
 
     if (ImGui.BeginTable("##allAchievementsTable", 4, _tableFlags))
     {
-      ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
-      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
-      ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
+      ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+      ImGui.TableSetupColumn("Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
       ImGui.TableSetupColumn("Watch", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Watch);
       ImGui.TableSetupScrollFreeze(0, 1);
       ImGui.TableHeadersRow();
@@ -170,9 +170,9 @@ public class ConfigWindow : Window
   {
     if (ImGui.BeginTable("##watchedAchievementsTable", 7, _tableFlags))
     {
-      ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
-      ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
-      ImGui.TableSetupColumn("Ach Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
+      ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+      ImGui.TableSetupColumn("Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
+      ImGui.TableSetupColumn("Category", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Category);
       ImGui.TableSetupColumn("Progress", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Progress);
       ImGui.TableSetupColumn("Update Trigger", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
       ImGui.TableSetupColumn("Config", ImGuiTableColumnFlags.NoSort | ImGuiTableColumnFlags.NoHide);
@@ -256,8 +256,8 @@ public class ConfigWindow : Window
 
       if (ImGui.BeginTable("##sessionStatsTable", 3, _sessionStatsTableFlags))
       {
-        ImGui.TableSetupColumn("Ach Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
-        ImGui.TableSetupColumn("Ach Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
+        ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
+        ImGui.TableSetupColumn("Description", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.WidthStretch, 0.0f, (int)AchievementListColumns.Description);
         ImGui.TableSetupColumn("Progress", ImGuiTableColumnFlags.DefaultSort, 0.0f, (int)AchievementListColumns.Progress);
         ImGui.TableSetupScrollFreeze(0, 1);
         ImGui.TableHeadersRow();

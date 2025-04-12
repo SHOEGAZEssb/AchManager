@@ -27,6 +27,7 @@ namespace AchManager.AchievementTrigger
     {
       var isRegex = _config.IsRegex;
 
+      ImGui.BeginGroup();
       if (isRegex)
         ImGui.Text("Regex pattern to check message against:");
       else
@@ -38,12 +39,25 @@ namespace AchManager.AchievementTrigger
         _config.RequiredMessageContent = rmq;
         _pluginConfig.Save();
       }
+      ImGui.EndGroup();
+      if (ImGui.IsItemHovered())
+      {
+        ImGui.BeginTooltip();
+        ImGui.SetTooltip("The required message content to check against.");
+        ImGui.EndTooltip();
+      }
 
       ImGui.SameLine();
       if (ImGui.Checkbox("Is Regex##isRegexCB", ref isRegex))
       {
         _config.IsRegex = isRegex;
         _pluginConfig.Save();
+      }
+      if (ImGui.IsItemHovered())
+      {
+        ImGui.BeginTooltip();
+        ImGui.SetTooltip("If checked, the chat message will be checked against the configured Regex.");
+        ImGui.EndTooltip();
       }
     }
   }

@@ -27,6 +27,7 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     protected override void DrawChildContent()
     {
+      ImGui.BeginGroup();
       ImGui.Text("Killed rank to update: ");
       ImGui.SameLine();
 
@@ -36,6 +37,13 @@ namespace AchManager.AchievementTrigger
       {
         _config.RequiredRank = enumValues[index];
         _pluginConfig.Save();
+      }
+      ImGui.EndGroup();
+      if (ImGui.IsItemHovered())
+      {
+        ImGui.BeginTooltip();
+        ImGui.SetTooltip("Defines which rank the killed mark needs to have in order for the trigger to fire.");
+        ImGui.EndTooltip();
       }
     }
   }

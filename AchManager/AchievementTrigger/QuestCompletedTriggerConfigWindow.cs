@@ -27,6 +27,7 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     protected override void DrawChildContent()
     {
+      ImGui.BeginGroup();
       ImGui.Text("Required quest type: ");
       ImGui.SameLine();
 
@@ -36,6 +37,13 @@ namespace AchManager.AchievementTrigger
       {
         _config.RequiredQuestType = enumValues[index];
         _pluginConfig.Save();
+      }
+      ImGui.EndGroup();
+      if (ImGui.IsItemHovered())
+      {
+        ImGui.BeginTooltip();
+        ImGui.SetTooltip("Defines which type of quest needs to be completed in order for the trigger to fire.");
+        ImGui.EndTooltip();
       }
     }
   }
