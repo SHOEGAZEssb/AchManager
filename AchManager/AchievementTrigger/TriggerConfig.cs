@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AchManager.AchievementTrigger
 {
@@ -268,6 +269,18 @@ namespace AchManager.AchievementTrigger
     /// Required job for the trigger to trigger.
     /// </summary>
     public Job RequiredJob { get; set; } = Job.Any;
+
+    /// <summary>
+    /// List of territories that are either white-
+    /// or blacklisted depending on <see cref="TreatRequiredTerritoriesAsWhitelist"/>.
+    /// </summary>
+    public List<uint> RequiredTerritories { get; set; } = [];
+
+    /// <summary>
+    /// Defines if the <see cref="RequiredTerritories"/> are treated
+    /// as a whitelist. If false, it is treated as a blacklist.
+    /// </summary>
+    public bool TreatRequiredTerritoriesAsWhitelist {  get; set; } = false;
 
     #endregion Properties
   }

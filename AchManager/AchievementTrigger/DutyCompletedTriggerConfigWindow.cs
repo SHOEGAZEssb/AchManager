@@ -9,12 +9,11 @@ namespace AchManager.AchievementTrigger
   /// Configuration window for a <see cref="DutyCompletedTriggerConfig"/>.
   /// </summary>
   /// <param name="config">The configuration of the trigger.</param>
-  /// <param name="pluginConfig">The current plugin configuration.</param>
   /// <param name="name">Name of the window.</param>
   /// <param name="flags">ImGui flags for the window.</param>
   /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
-  internal class DutyCompletedTriggerConfigWindow(DutyCompletedTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
-    : DefaultTriggerConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
+  internal class DutyCompletedTriggerConfigWindow(DutyCompletedTriggerConfig config, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+    : DefaultTriggerConfigWindow(config, name, flags, forceMainWindow)
   {
     #region Properties
 
@@ -38,39 +37,55 @@ namespace AchManager.AchievementTrigger
 
       bool changed = false;
 
-      foreach (var type in Enum.GetValues<ContentType>())
+      if (ImGui.BeginTable("DutyTypeTable", 2, ImGuiTableFlags.BordersInnerV))
       {
-        bool isChecked = selectedTypes.Contains(type);
-        if (ImGui.Checkbox(type.ToString(), ref isChecked))
-        {
-          changed = true;
+        ImGui.TableNextRow();
 
-          if (isChecked)
+        int i = 0;
+        foreach (var type in Enum.GetValues<ContentType>())
+        {
+          // New row every two items
+          if (i % 2 == 0 && i != 0)
+            ImGui.TableNextRow();
+
+          ImGui.TableSetColumnIndex(i % 2);
+
+          bool isChecked = selectedTypes.Contains(type);
+          if (ImGui.Checkbox(type.ToString(), ref isChecked))
           {
-            if (type == ContentType.All)
+            changed = true;
+
+            if (isChecked)
             {
-              selectedTypes.Clear();
-              selectedTypes.Add(ContentType.All);
+              if (type == ContentType.All)
+              {
+                selectedTypes.Clear();
+                selectedTypes.Add(ContentType.All);
+              }
+              else
+              {
+                selectedTypes.Remove(ContentType.All);
+                selectedTypes.Add(type);
+              }
             }
             else
             {
-              selectedTypes.Remove(ContentType.All);
-              selectedTypes.Add(type);
+              selectedTypes.Remove(type);
+              if (selectedTypes.Count == 0)
+                selectedTypes.Add(ContentType.All);
             }
           }
-          else
-          {
-            selectedTypes.Remove(type);
-            if (selectedTypes.Count == 0)
-              selectedTypes.Add(ContentType.All);
-          }
+
+          i++;
         }
+
+        ImGui.EndTable();
       }
 
       if (changed)
       {
         _config.RequiredContentTypes = [.. selectedTypes];
-        _pluginConfig.Save();
+        Plugin.Configuration.Save();
       }
 
       ImGui.EndGroup();

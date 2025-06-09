@@ -13,8 +13,8 @@ namespace AchManager.AchievementTrigger
   /// <param name="name">Name of the window.</param>
   /// <param name="flags">ImGui flags for the window.</param>
   /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
-  internal class MarkKilledTriggerConfigWindow(MarkKilledTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
-    : DefaultTriggerConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
+  internal class MarkKilledTriggerConfigWindow(MarkKilledTriggerConfig config, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+    : DefaultTriggerConfigWindow(config, name, flags, forceMainWindow)
   {
     #region Properties
 
@@ -36,7 +36,7 @@ namespace AchManager.AchievementTrigger
       if (ImGui.Combo("##mktConfigRank", ref index, [.. enumValues.Select(r => r.ToString())], enumValues.Length))
       {
         _config.RequiredRank = enumValues[index];
-        _pluginConfig.Save();
+        Plugin.Configuration.Save();
       }
       ImGui.EndGroup();
       if (ImGui.IsItemHovered())

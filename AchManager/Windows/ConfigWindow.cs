@@ -17,7 +17,7 @@ public class ConfigWindow : Window
   private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
                                                                .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
-                                                                           (a.AchievementCategory.Value.AchievementKind.Value.Name) != "Legacy")
+                                                                           a.AchievementCategory.Value.AchievementKind.Value.Name != "Legacy")
                                                                ?? [];
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
@@ -215,7 +215,7 @@ public class ConfigWindow : Window
           if (_currentConfigWindow != null)
             _windowSystem.RemoveWindow(_currentConfigWindow);
 
-          _currentConfigWindow = GetConfigWindowForTrigger(ach.Trigger, Configuration);
+          _currentConfigWindow = GetConfigWindowForTrigger(ach.Trigger);
           _windowSystem.AddWindow(_currentConfigWindow);
           _currentConfigWindow.Toggle();
         }
@@ -331,18 +331,18 @@ public class ConfigWindow : Window
     return strings;
   }
 
-  private static DefaultTriggerConfigWindow GetConfigWindowForTrigger(AchievementUpdateTriggerBase trigger, Configuration pluginConfig)
+  private static DefaultTriggerConfigWindow GetConfigWindowForTrigger(AchievementUpdateTriggerBase trigger)
   {
     if (trigger.Config is MarkKilledTriggerConfig mktc)
-      return new MarkKilledTriggerConfigWindow(mktc, pluginConfig, "Mark Killed Trigger Config");
+      return new MarkKilledTriggerConfigWindow(mktc, "Mark Killed Trigger Config");
     else if (trigger.Config is DutyCompletedTriggerConfig dctc)
-      return new DutyCompletedTriggerConfigWindow(dctc, pluginConfig, "Duty Completed Trigger Config");
+      return new DutyCompletedTriggerConfigWindow(dctc, "Duty Completed Trigger Config");
     else if (trigger.Config is ChatMessageTriggerConfig cmtc)
-      return new ChatMessageTriggerConfigWindow(cmtc, pluginConfig, "Chat Message Trigger Config");
+      return new ChatMessageTriggerConfigWindow(cmtc, "Chat Message Trigger Config");
     else if (trigger.Config is QuestCompletedTriggerConfig qctc)
-      return new QuestCompletedTriggerConfigWindow(qctc, pluginConfig, "Quest Completed Trigger Config");
+      return new QuestCompletedTriggerConfigWindow(qctc, "Quest Completed Trigger Config");
     else
-      return new DefaultTriggerConfigWindow(trigger.Config, pluginConfig, $"{trigger.TriggerIdentifier} Config");
+      return new DefaultTriggerConfigWindow(trigger.Config, $"{trigger.TriggerIdentifier} Config");
   }
 
   private static IEnumerable<Achievement> SortAchievementList(IEnumerable<Achievement> achievements, ImGuiTableSortSpecsPtr sortSpecs)

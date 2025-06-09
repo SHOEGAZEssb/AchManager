@@ -9,12 +9,11 @@ namespace AchManager.AchievementTrigger
   /// Configuration window for a <see cref="QuestCompletedTrigger"/>.
   /// </summary>
   /// <param name="config">The configuration of the trigger.</param>
-  /// <param name="pluginConfig">The current plugin configuration.</param>
   /// <param name="name">Name of the window.</param>
   /// <param name="flags">ImGui flags for the window.</param>
   /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
-  internal class QuestCompletedTriggerConfigWindow(QuestCompletedTriggerConfig config, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
-    : DefaultTriggerConfigWindow(config, pluginConfig, name, flags, forceMainWindow)
+  internal class QuestCompletedTriggerConfigWindow(QuestCompletedTriggerConfig config, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+    : DefaultTriggerConfigWindow(config, name, flags, forceMainWindow)
   {
     #region Properties
 
@@ -36,7 +35,7 @@ namespace AchManager.AchievementTrigger
       if (ImGui.Combo("##requiredQuestTypeCB", ref index, [.. enumValues.Select(r => r.ToString())], enumValues.Length))
       {
         _config.RequiredQuestType = enumValues[index];
-        _pluginConfig.Save();
+        Plugin.Configuration.Save();
       }
       ImGui.EndGroup();
       if (ImGui.IsItemHovered())

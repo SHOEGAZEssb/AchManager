@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace AchManager.Windows
 {
-  internal class DefaultTriggerConfigWindow(TriggerConfig triggerConfig, Configuration pluginConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.AlwaysAutoResize, bool forceMainWindow = false)
+  internal class DefaultTriggerConfigWindow(TriggerConfig triggerConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.AlwaysAutoResize, bool forceMainWindow = false)
     : Window(name, flags, forceMainWindow)
   {
     private readonly TriggerConfig _triggerConfig = triggerConfig;
-    protected readonly Configuration _pluginConfig = pluginConfig;
+    private ZoneConfigurationWindow? _zoneConfigWindow;
 
     /// <summary>
     /// Draws the config.
@@ -29,7 +29,7 @@ namespace AchManager.Windows
         if (ImGui.Checkbox("Chat##showChatMessage", ref chat))
         {
           _triggerConfig.ShowChatMessage = chat;
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         if (ImGui.IsItemHovered())
         {
@@ -42,7 +42,7 @@ namespace AchManager.Windows
         if (ImGui.Checkbox("Dalamud Notification##showNotification", ref notif))
         {
           _triggerConfig.ShowNotification = notif;
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         if (ImGui.IsItemHovered())
         {
@@ -56,7 +56,7 @@ namespace AchManager.Windows
         if (ImGui.Checkbox("Notify every##notifyEveryXTimesCB", ref notifyEveryXTimes))
         {
           _triggerConfig.TriggerEveryXTimes = notifyEveryXTimes;
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         ImGui.SameLine();
         ImGui.BeginDisabled(!notifyEveryXTimes);
@@ -64,7 +64,7 @@ namespace AchManager.Windows
         if (ImGui.SliderInt("##notifyEverySlider", ref notifyEveryCount, 2, 100))
         {
           _triggerConfig.TriggerEveryCount = notifyEveryCount;
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         ImGui.EndDisabled();
         ImGui.SameLine();
@@ -91,7 +91,7 @@ namespace AchManager.Windows
         if (ImGui.InputInt("##delayMS", ref delay) && delay >= 0)
         {
           _triggerConfig.DelayMS = delay;
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         ImGui.EndGroup();
         if (ImGui.IsItemHovered())
@@ -117,13 +117,33 @@ namespace AchManager.Windows
         if (ImGui.Combo("##requiredJobCB", ref index, jobStrings, jobStrings.Length))
         {
           _triggerConfig.RequiredJob = Enum.Parse<Job>(jobStrings[index]);
-          _pluginConfig.Save();
+          Plugin.Configuration.Save();
         }
         ImGui.EndGroup();
         if (ImGui.IsItemHovered())
         {
           ImGui.BeginTooltip();
           ImGui.SetTooltip("Defines which job the player must be on in order for the trigger to fire.");
+          ImGui.EndTooltip();
+        }
+
+        ImGui.BeginGroup();
+        ImGui.Text("Required Zones:");
+        ImGui.SameLine();
+        if (ImGui.Button("Open Zone Configuration"))
+        {
+          if (_zoneConfigWindow != null)
+            Plugin.WindowSystem.RemoveWindow(_zoneConfigWindow);
+
+          _zoneConfigWindow = new ZoneConfigurationWindow(_triggerConfig, "Zone Configration");
+          Plugin.WindowSystem.AddWindow(_zoneConfigWindow);
+          _zoneConfigWindow.Toggle();
+        }
+        ImGui.EndGroup();
+        if (ImGui.IsItemHovered())
+        {
+          ImGui.BeginTooltip();
+          ImGui.SetTooltip("Opens the Zone configuration window for this trigger where you can define in which zones the trigger is allowed to fire.");
           ImGui.EndTooltip();
         }
 

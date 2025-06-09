@@ -10,6 +10,8 @@ namespace AchManager
 {
   public class WatchedAchievement : IDisposable
   {
+    #region Properties
+
     /// <summary>
     /// Event that is fired when the achievement gets completed.
     /// </summary>
@@ -49,6 +51,10 @@ namespace AchManager
 
     private int _progressSteps = 0;
 
+    #endregion Properties
+
+    #region Construction
+
     public WatchedAchievement(uint id, AchievementUpdateTriggerBase? trigger)
     {
       AchievementHookManager.OnAchievementProgress += AchievementHookManager_OnAchievementProgress;
@@ -56,6 +62,8 @@ namespace AchManager
       Trigger = trigger;
       AchievementInfo = Svc.Data.GetExcelSheet<Lumina.Excel.Sheets.Achievement>()?.First(a => a.RowId == WatchedID) ?? throw new ArgumentException($"Could not get achievement info for {WatchedID}");
     }
+
+    #endregion Construction
 
     /// <summary>
     /// Fetches initial achievement progress.

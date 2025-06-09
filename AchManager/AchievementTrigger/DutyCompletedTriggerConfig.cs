@@ -14,6 +14,7 @@ namespace AchManager.AchievementTrigger
     Raids = 5, // raids
     TreasureHunt = 9, // treasure hunt
     DOL = 16, // disciples of land (ocean fishing)
+    GoldSaucer = 19, // gold saucer
     DeepDungeons = 21, // deep dungeons
     UltimateRaids = 28, // ultimate raids
     VC = 30 // V&C

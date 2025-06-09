@@ -30,7 +30,7 @@ public sealed class Plugin : IDalamudPlugin
   /// <summary>
   /// ImGui window manager.
   /// </summary>
-  public readonly WindowSystem WindowSystem = new("AchManager");
+  public static WindowSystem WindowSystem { get; } = new("AchManager");
 
   private IDalamudPluginInterface PluginInterface { get; init; }
   private ICommandManager CommandManager { get; init; }

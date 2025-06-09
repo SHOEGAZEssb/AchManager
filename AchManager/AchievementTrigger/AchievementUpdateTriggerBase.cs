@@ -66,7 +66,7 @@ namespace AchManager.AchievementTrigger
     /// </summary>
     protected void FireOnTrigger()
     {
-      if (Config.RequiredJob == Job.Any || (int)Player.Job == (int)Config.RequiredJob)
+      if (CanFire())
       {
         _taskManager.EnqueueDelay(Config.DelayMS);
         _taskManager.Enqueue(() =>
@@ -80,5 +80,20 @@ namespace AchManager.AchievementTrigger
     /// Initializes this trigger.
     /// </summary>
     protected abstract void Init();
+
+    /// <summary>
+    /// Checks if the trigger can currently trigger
+    /// based on its configuration.
+    /// </summary>
+    /// <returns>True if the trigger can trigger, otherwise false.</returns>
+    private bool CanFire()
+    {
+      var jobMatches = Config.RequiredJob == Job.Any || (int)Player.Job == (int)Config.RequiredJob;
+      var noTerritoryRestriction = Config.RequiredTerritories.Count == 0;
+      var territoryMatchesWhitelist = Config.TreatRequiredTerritoriesAsWhitelist && Config.RequiredTerritories.Contains(Player.Territory);
+      var territoryMatchesBlacklist = !Config.TreatRequiredTerritoriesAsWhitelist && !Config.RequiredTerritories.Contains(Player.Territory);
+
+      return jobMatches && (noTerritoryRestriction || territoryMatchesWhitelist || territoryMatchesBlacklist);
+    }
   }
 }
