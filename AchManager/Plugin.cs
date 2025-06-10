@@ -56,7 +56,7 @@ public sealed class Plugin : IDalamudPlugin
     Configuration = Configuration.Load(Path.Combine(PluginInterface!.ConfigDirectory.FullName, "AchManager.json")) ?? new Configuration();
     Configuration.Initialize(PluginInterface);
 
-    ConfigWindow = new ConfigWindow(WindowSystem);
+    ConfigWindow = new ConfigWindow();
 
     WindowSystem.AddWindow(ConfigWindow);
 

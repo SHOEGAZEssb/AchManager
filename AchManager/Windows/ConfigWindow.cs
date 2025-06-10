@@ -13,7 +13,6 @@ namespace AchManager.Windows;
 
 public class ConfigWindow : Window
 {
-  private readonly WindowSystem _windowSystem;
   private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
                                                                .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
@@ -51,10 +50,9 @@ public class ConfigWindow : Window
     Progress = 4
   }
 
-  public ConfigWindow(WindowSystem windowSystem)
+  public ConfigWindow()
     : base("AchManager Configuration###With a constant ID")
   {
-    _windowSystem = windowSystem;
     _filteredAllAchievements = _allAchievements;
     _watchedAchievements = Configuration.Achievements;
 
@@ -213,10 +211,10 @@ public class ConfigWindow : Window
         if (ach.Trigger != null && ImGui.Button($"Config##ach_{ach.WatchedID}_openConfig"))
         {
           if (_currentConfigWindow != null)
-            _windowSystem.RemoveWindow(_currentConfigWindow);
+            Plugin.WindowSystem.RemoveWindow(_currentConfigWindow);
 
           _currentConfigWindow = GetConfigWindowForTrigger(ach.Trigger);
-          _windowSystem.AddWindow(_currentConfigWindow);
+          Plugin.WindowSystem.AddWindow(_currentConfigWindow);
           _currentConfigWindow.Toggle();
         }
 

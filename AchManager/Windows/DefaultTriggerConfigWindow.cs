@@ -14,6 +14,15 @@ namespace AchManager.Windows
     private ZoneConfigurationWindow? _zoneConfigWindow;
 
     /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public override void OnClose()
+    {
+      if (_zoneConfigWindow != null)
+        Plugin.WindowSystem.RemoveWindow(_zoneConfigWindow);
+    }
+
+    /// <summary>
     /// Draws the config.
     /// Inheriting config windows should not override
     /// this, but override <see cref="DrawChildContent"/>

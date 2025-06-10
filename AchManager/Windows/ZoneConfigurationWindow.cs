@@ -11,6 +11,13 @@ using System.Numerics;
 
 namespace AchManager.Windows
 {
+  /// <summary>
+  /// Configuration window for the zones of a trigger.
+  /// </summary>
+  /// <param name="triggerConfig">The configuration of the trigger.</param>
+  /// <param name="name">Name of the window.</param>
+  /// <param name="flags">ImGui flags for the window.</param>
+  /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
   internal class ZoneConfigurationWindow(TriggerConfig triggerConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false) : Window(name, flags, forceMainWindow)
   {
     private readonly TriggerConfig _triggerConfig = triggerConfig;
@@ -92,18 +99,19 @@ namespace AchManager.Windows
       ImGui.SameLine();
 
       // configured zones
-      var filteredTerritories = _filteredAvailableZones.Where(t => !_triggerConfig.RequiredTerritories.Contains(t.Key));
+      var filteredTerritories = _filteredAvailableZones.Where(t => !_triggerConfig.RequiredTerritories.Contains(t.Key)).ToList();
       ImGui.BeginGroup();
       ImGui.Text("Available Zones");
       if (ImGui.BeginListBox("###AvailableZones", new Vector2(listBoxWidth, listBoxHeight)))
       {
-        for (int i = 0; i < filteredTerritories.Count(); i++)
+        foreach (var kvp in filteredTerritories)
         {
-          ImGui.Selectable(GetZoneName(filteredTerritories.ElementAt(i).Key, _showIDs));
+          var zoneName = GetZoneName(kvp.Key, _showIDs);
+          ImGui.Selectable(zoneName);
 
           if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
           {
-            _triggerConfig.RequiredTerritories.Add(filteredTerritories.ElementAt(i).Key);
+            _triggerConfig.RequiredTerritories.Add(kvp.Key);
             Plugin.Configuration.Save();
           }
         }
@@ -115,8 +123,7 @@ namespace AchManager.Windows
 
     private static string GetZoneName(uint zoneID, bool showID)
     {
-      string name = _territoryData[zoneID];
-      return showID ? $"{name} ({zoneID})" : name;
+      return showID ? $"{_territoryData[zoneID]} ({zoneID})" : _territoryData[zoneID];
     }
   }
 }
