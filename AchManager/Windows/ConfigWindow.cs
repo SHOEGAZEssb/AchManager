@@ -315,6 +315,8 @@ public class ConfigWindow : Window
       return TriggerType.ChatMessage.ToString();
     else if (trigger is QuestCompletedTrigger)
       return TriggerType.QuestCompleded.ToString();
+    else if (trigger is BannerShownTrigger)
+      return TriggerType.BannerShown.ToString();
     else
       throw new ArgumentException("unknown trigger type");
   }
@@ -339,6 +341,8 @@ public class ConfigWindow : Window
       return new ChatMessageTriggerConfigWindow(cmtc, "Chat Message Trigger Config");
     else if (trigger.Config is QuestCompletedTriggerConfig qctc)
       return new QuestCompletedTriggerConfigWindow(qctc, "Quest Completed Trigger Config");
+    else if (trigger.Config is BannerShownTriggerConfig bstc)
+      return new BannerShownTriggerConfigWindow(bstc, "Banner Shown Trigger Config");
     else
       return new DefaultTriggerConfigWindow(trigger.Config, $"{trigger.TriggerIdentifier} Config");
   }

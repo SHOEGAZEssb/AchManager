@@ -9,7 +9,8 @@ namespace AchManager.EventManager
     FateCompleted,
     MarkKilled,
     ChatMessage,
-    QuestCompleded
+    QuestCompleded,
+    BannerShown
   }
 
   /// <summary>

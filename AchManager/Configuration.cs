@@ -44,6 +44,7 @@ public class Configuration : IPluginConfiguration
     { TriggerType.MarkKilled, typeof(MarkKilledTrigger) },
     { TriggerType.ChatMessage, typeof(ChatMessageTrigger) },
     { TriggerType.QuestCompleded, typeof(QuestCompletedTrigger) },
+    { TriggerType.BannerShown, typeof(BannerShownTrigger) },
     { TriggerType.None, null }
   };
 

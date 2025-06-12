@@ -53,7 +53,7 @@ namespace AchManager.Windows
       ImGui.Checkbox("Show zone IDs", ref _showIDs);
 
       ImGui.Separator();
-
+      
       if (ImGui.Button("Add current zone") && !_triggerConfig.RequiredTerritories.Contains(Player.Territory))
       {
         _triggerConfig.RequiredTerritories.Add(Player.Territory);
