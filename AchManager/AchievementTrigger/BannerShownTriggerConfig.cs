@@ -29,7 +29,11 @@ namespace AchManager.AchievementTrigger
       { 128370, "Stellar Mission Commenced" },
       { 128371, "Stellar Mission Abandoned" },
       { 128372, "Stellar Mission Failed" },
-      { 128373, "Stellar Mission Complete" }
+      { 128373, "Stellar Mission Complete" },
+      { 128387, "Engage! (Occult Crescent)" },
+      { 128388, "CE Won (Occult Crescent)" },
+      { 128390, "FATE Joined (Occult Crescent)" },
+      { 128391, "FATE Complete (Occult Crescent)" }
     };
 
     #region Properties

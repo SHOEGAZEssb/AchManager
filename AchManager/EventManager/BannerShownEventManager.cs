@@ -25,6 +25,8 @@ namespace AchManager.EventManager
 
     #region Properties
 
+    public int LastSeenBannerID { get; private set; } = -1;
+
     private delegate void ImageSetImageTextureDelegate(AtkUnitBase* addon, int bannerId, int a3, int sfxId);
     private readonly EzHook<ImageSetImageTextureDelegate> SetImageTextureHook;
 
@@ -47,8 +49,10 @@ namespace AchManager.EventManager
 
     private void OnSetImageTexture(AtkUnitBase* addon, int bannerId, int a3, int soundEffectId)
     {
+      LastSeenBannerID = bannerId;
       Svc.Log.Debug($"{nameof(BannerShownEventManager)}: Fire ({bannerId})");
       FireOnEvent(new BannerShownEventArgs(bannerId));
+      SetImageTextureHook.Original(addon, bannerId, a3, soundEffectId);
     }
   }
 }

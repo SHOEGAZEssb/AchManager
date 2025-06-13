@@ -1,4 +1,7 @@
 ﻿using AchManager.Windows;
+using Dalamud.Interface.Textures.TextureWraps;
+using Dalamud.Interface.Utility;
+using ECommons.DalamudServices;
 using ImGuiNET;
 
 namespace AchManager.AchievementTrigger
@@ -17,6 +20,7 @@ namespace AchManager.AchievementTrigger
 
     private readonly BannerShownTriggerConfig _config = config;
     private bool _showBannerIDs = true;
+    private bool _showPreview = false;
 
     #endregion Properties
 
@@ -28,9 +32,11 @@ namespace AchManager.AchievementTrigger
       ImGui.Checkbox("Show banner IDs", ref _showBannerIDs);
       ImGuiHelper.ShowToolTip("If enabled, shows the internal banner IDs.");
 
+      ImGui.Checkbox("Show preview", ref _showPreview);
+      ImGuiHelper.ShowToolTip("If enabled, shows a preview image of a banner as a tooltip.");
+
       ImGui.Separator();
 
-      ImGui.BeginGroup();
       var selectedBanners = _config.Banners;
       if (ImGui.BeginTable("BannerTable", 2, ImGuiTableFlags.BordersInnerV))
       {
@@ -55,13 +61,29 @@ namespace AchManager.AchievementTrigger
 
             Plugin.Configuration.Save();
           }
-
+          if (ImGui.IsItemHovered() && _showPreview)
+            ShowPreviewToolTip(kvp.Key);
           i++;
         }
+
+        ImGui.EndTable();
       }
-      ImGui.EndTable();
-      ImGui.EndGroup();
-      ImGuiHelper.ShowToolTip("List of banners that will cause this trigger to fire.");
+    }
+
+    private static void ShowPreviewToolTip(int bannerID)
+    {
+      ImGui.BeginTooltip();
+      IDalamudTextureWrap? icon;
+      try
+      {
+        icon = Svc.Texture.GetFromGameIcon(bannerID).GetWrapOrDefault();
+        if (icon != null)
+          ImGui.Image(icon.ImGuiHandle, ImGuiHelpers.ScaledVector2(icon.Width * 100f / icon.Height, 100));
+      }
+      finally
+      {
+        ImGui.EndTooltip();
+      }
     }
   }
 }
