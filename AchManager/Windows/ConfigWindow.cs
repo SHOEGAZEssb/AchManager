@@ -13,7 +13,6 @@ namespace AchManager.Windows;
 
 public class ConfigWindow : Window
 {
-  private readonly Configuration Configuration = Plugin.Configuration;
   private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
                                                                .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
                                                                            a.AchievementCategory.Value.AchievementKind.Value.Name != "Legacy")
@@ -21,7 +20,8 @@ public class ConfigWindow : Window
   private IEnumerable<Achievement> _filteredAllAchievements = [];
   private string _allAchievementsSearchText = string.Empty;
 
-  private IEnumerable<WatchedAchievement> _watchedAchievements = [];
+  private IEnumerable<WatchedAchievement> _filteredWatchedAchievements = [];
+  private string _watchedAchievementsSearchText = string.Empty;
 
   private static readonly string[] _triggerTypeStrings = GetTriggerTypeStrings();
 
@@ -54,7 +54,7 @@ public class ConfigWindow : Window
     : base("AchManager Configuration###With a constant ID")
   {
     _filteredAllAchievements = _allAchievements;
-    _watchedAchievements = Configuration.Achievements;
+    _filteredWatchedAchievements = Plugin.Configuration.Achievements;
 
     SizeConstraints = new()
     {
@@ -149,13 +149,13 @@ public class ConfigWindow : Window
           ImGui.Text(ach.AchievementCategory.Value.AchievementKind.Value.Name.ToString());
 
           ImGui.TableNextColumn();
-          bool watched = Configuration.WatchedAchievements.ContainsKey(ach.RowId);
+          bool watched = Plugin.Configuration.WatchedAchievements.ContainsKey(ach.RowId);
           if (ImGui.Checkbox($"##ach_{ach.RowId}_watch", ref watched))
           {
             if (watched)
-              Configuration.AddWatchedAchievement(ach.RowId);
+              Plugin.Configuration.AddWatchedAchievement(ach.RowId);
             else
-              Configuration.RemoveWatchedAchievement(ach.RowId);
+              Plugin.Configuration.RemoveWatchedAchievement(ach.RowId);
           }
         }
 
@@ -166,6 +166,20 @@ public class ConfigWindow : Window
 
   private void DrawWatchedAchievementList()
   {
+    ImGui.Text("Search");
+    ImGui.SameLine();
+    if (ImGui.InputText("##watchedAchievementsSearchText", ref _watchedAchievementsSearchText, 128))
+    {
+      if (string.IsNullOrEmpty(_watchedAchievementsSearchText))
+        _filteredWatchedAchievements = Plugin.Configuration.Achievements;
+      else
+        _filteredWatchedAchievements = Plugin.Configuration.Achievements.Where(a => a.AchievementInfo.Name.ToString().Contains(_watchedAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                                                               a.AchievementInfo.Description.ToString().Contains(_watchedAchievementsSearchText, StringComparison.CurrentCultureIgnoreCase));
+      _watchedListNeedsSorting = true;
+    }
+
+    ImGui.Separator();
+
     if (ImGui.BeginTable("##watchedAchievementsTable", 7, _tableFlags))
     {
       ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.NoHide, 0.0f, (int)AchievementListColumns.Name);
@@ -179,14 +193,14 @@ public class ConfigWindow : Window
       ImGui.TableHeadersRow();
 
       var sortSpecs = ImGui.TableGetSortSpecs();
-      if ((sortSpecs.SpecsDirty || _watchedListNeedsSorting) && Configuration.Achievements.Any())
+      if ((sortSpecs.SpecsDirty || _watchedListNeedsSorting) && Plugin.Configuration.Achievements.Any())
       {
-        _watchedAchievements = SortWatchedAchievementList(Configuration.Achievements, sortSpecs);
+        _filteredWatchedAchievements = SortWatchedAchievementList(_filteredWatchedAchievements, sortSpecs);
         sortSpecs.SpecsDirty = false;
         _watchedListNeedsSorting = false;
       }
 
-      foreach (var ach in _watchedAchievements)
+      foreach (var ach in _filteredWatchedAchievements)
       {
         ImGui.TableNextRow();
 
@@ -205,7 +219,7 @@ public class ConfigWindow : Window
         ImGui.TableNextColumn();
         int index = Array.IndexOf(_triggerTypeStrings, GetStringForTrigger(ach.Trigger));
         if (ImGui.Combo($"##ach_{ach.WatchedID}_triggerTypeCombo", ref index, _triggerTypeStrings, _triggerTypeStrings.Length))
-          Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, Enum.Parse<TriggerType>(_triggerTypeStrings[index]));
+          Plugin.Configuration.ChangeTriggerTypeForAchievement(ach.WatchedID, Enum.Parse<TriggerType>(_triggerTypeStrings[index]));
 
         ImGui.TableNextColumn();
         if (ach.Trigger != null && ImGui.Button($"Config##ach_{ach.WatchedID}_openConfig"))
@@ -220,7 +234,7 @@ public class ConfigWindow : Window
 
         ImGui.TableNextColumn();
         if (ImGui.Button($"Remove##ach_{ach.WatchedID}_removeWatched"))
-          Configuration.RemoveWatchedAchievement(ach.WatchedID);
+          Plugin.Configuration.RemoveWatchedAchievement(ach.WatchedID);
       }
 
       ImGui.EndTable();
