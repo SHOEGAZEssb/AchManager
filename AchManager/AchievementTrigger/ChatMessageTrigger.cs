@@ -9,7 +9,7 @@ namespace AchManager.AchievementTrigger
   /// Trigger that triggers when a chat message fullfills certain conditions.
   /// </summary>
   [Serializable]
-  internal class ChatMessageTrigger : AchievementUpdateTriggerBase
+  internal sealed class ChatMessageTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

@@ -8,7 +8,7 @@ namespace AchManager.AchievementTrigger
   /// Trigger that fires when a mark is killed.
   /// </summary>
   [Serializable]
-  public class MarkKilledTrigger : AchievementUpdateTriggerBase
+  public sealed class MarkKilledTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

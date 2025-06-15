@@ -18,7 +18,7 @@ namespace AchManager.Windows
   /// <param name="name">Name of the window.</param>
   /// <param name="flags">ImGui flags for the window.</param>
   /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
-  internal class ZoneConfigurationWindow(TriggerConfig triggerConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false) : Window(name, flags, forceMainWindow)
+  internal sealed class ZoneConfigurationWindow(TriggerConfig triggerConfig, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false) : Window(name, flags, forceMainWindow)
   {
     private readonly TriggerConfig _triggerConfig = triggerConfig;
     private static readonly Dictionary<uint, string> _territoryData;

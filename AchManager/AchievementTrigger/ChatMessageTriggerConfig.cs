@@ -6,7 +6,7 @@ namespace AchManager.AchievementTrigger
   /// Configuration for a <see cref="ChatMessageTrigger"/>.
   /// </summary>
   [Serializable]
-  internal class ChatMessageTriggerConfig() : TriggerConfig
+  internal sealed class ChatMessageTriggerConfig() : TriggerConfig
   {
     #region Properties
 

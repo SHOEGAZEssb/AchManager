@@ -11,7 +11,7 @@ namespace AchManager.EventManager
   /// <summary>
   /// Event manager that informs about completed quests.
   /// </summary>
-  internal class QuestCompletedEventManager : AchievementUpdateEventManagerBase<QuestCompletedEventArgs>
+  internal sealed class QuestCompletedEventManager : AchievementUpdateEventManagerBase<QuestCompletedEventArgs>
   {
     #region Singleton
 

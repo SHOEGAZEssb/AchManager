@@ -9,7 +9,7 @@ namespace AchManager.EventManager
   /// Event manager that informs about when a fate has been completed.
   /// </summary>
 
-  internal unsafe class FateCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
+  internal sealed unsafe class FateCompletedEventManager : AchievementUpdateEventManagerBase<EventArgs>
   {
     #region Singleton
 

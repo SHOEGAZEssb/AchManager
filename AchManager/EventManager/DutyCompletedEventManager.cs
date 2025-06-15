@@ -5,7 +5,7 @@ namespace AchManager.EventManager
   /// <summary>
   /// Event manager that informs about when a duty successfully completes.
   /// </summary>
-  internal class DutyCompletedEventManager : AchievementUpdateEventManagerBase<DutyCompletedEventArgs>
+  internal sealed class DutyCompletedEventManager : AchievementUpdateEventManagerBase<DutyCompletedEventArgs>
   {
     #region Singleton
 

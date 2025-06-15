@@ -15,6 +15,8 @@ namespace AchManager;
 /// </summary>
 public sealed class Plugin : IDalamudPlugin
 {
+  #region Properties
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
   /// <summary>
   /// Provides access to game textures.
@@ -36,6 +38,10 @@ public sealed class Plugin : IDalamudPlugin
   private ICommandManager CommandManager { get; init; }
 
   private ConfigWindow ConfigWindow { get; init; }
+
+  #endregion Properties
+
+  #region Construction
 
   /// <summary>
   /// Constructor.
@@ -75,6 +81,8 @@ public sealed class Plugin : IDalamudPlugin
     PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUI;
   }
 
+  #endregion Construction
+
   /// <summary>
   /// Disposes the plugin.
   /// </summary>
@@ -97,6 +105,7 @@ public sealed class Plugin : IDalamudPlugin
     FateCompletedEventManager.Instance.Dispose();
     MarkKilledEventManager.Instance.Dispose();
     QuestCompletedEventManager.Instance.Dispose();
+    BannerShownEventManager.Instance.Dispose();
   }
 
   private void OnAchCommand(string command, string args)
@@ -120,5 +129,5 @@ public sealed class Plugin : IDalamudPlugin
   /// <summary>
   /// Shows the main UI.
   /// </summary>
-  public void ToggleMainUI() => ConfigWindow.Toggle();
+  private void ToggleMainUI() => ConfigWindow.Toggle();
 }

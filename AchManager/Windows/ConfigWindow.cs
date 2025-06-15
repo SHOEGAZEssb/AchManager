@@ -11,36 +11,11 @@ using Lumina.Excel.Sheets;
 
 namespace AchManager.Windows;
 
-public class ConfigWindow : Window
+/// <summary>
+/// Main configuration window.
+/// </summary>
+public sealed class ConfigWindow : Window
 {
-  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
-                                                               .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
-                                                                           a.AchievementCategory.Value.AchievementKind.Value.Name != "Legacy")
-                                                               ?? [];
-  private IEnumerable<Achievement> _filteredAllAchievements = [];
-  private string _allAchievementsSearchText = string.Empty;
-
-  private IEnumerable<WatchedAchievement> _filteredWatchedAchievements = [];
-  private string _watchedAchievementsSearchText = string.Empty;
-
-  private static readonly string[] _triggerTypeStrings = GetTriggerTypeStrings();
-
-  private static readonly ImGuiTableFlags _tableFlags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable
-                    | ImGuiTableFlags.Sortable
-                    | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
-                    | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
-                    | ImGuiTableFlags.SizingFixedFit;
-
-  private static readonly ImGuiTableFlags _sessionStatsTableFlags = ImGuiTableFlags.Resizable
-                    | ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody
-                    | ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY
-                    | ImGuiTableFlags.SizingFixedFit;
-
-  private DefaultTriggerConfigWindow? _currentConfigWindow;
-
-  private bool _fullListNeedsSorting = true;
-  private bool _watchedListNeedsSorting = true;
-
   private enum AchievementListColumns
   {
     Name = 0,
@@ -50,6 +25,42 @@ public class ConfigWindow : Window
     Progress = 4
   }
 
+  #region Properties
+
+  private readonly IEnumerable<Achievement> _allAchievements = Svc.Data.GetExcelSheet<Achievement>()?.Skip(1)?
+                                                               .Where(a => !string.IsNullOrEmpty(a.Name.ToString()) &&
+                                                                           a.AchievementCategory.Value.AchievementKind.Value.Name != "Legacy") ?? [];
+  private IEnumerable<Achievement> _filteredAllAchievements = [];
+  private string _allAchievementsSearchText = string.Empty;
+
+  private IEnumerable<WatchedAchievement> _filteredWatchedAchievements = [];
+  private string _watchedAchievementsSearchText = string.Empty;
+
+  private static readonly string[] _triggerTypeStrings = GetTriggerTypeStrings();
+
+  private static readonly ImGuiTableFlags _tableFlags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
+                                                        ImGuiTableFlags.Sortable |
+                                                        ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody |
+                                                        ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY |
+                                                        ImGuiTableFlags.SizingFixedFit;
+
+  private static readonly ImGuiTableFlags _sessionStatsTableFlags = ImGuiTableFlags.Resizable |
+                                                                    ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody |
+                                                                    ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY |
+                                                                    ImGuiTableFlags.SizingFixedFit;
+
+  private DefaultTriggerConfigWindow? _currentConfigWindow;
+
+  private bool _fullListNeedsSorting = true;
+  private bool _watchedListNeedsSorting = true;
+
+  #endregion Properties
+
+  #region Construction
+
+  /// <summary>
+  /// Constructor.
+  /// </summary>
   public ConfigWindow()
     : base("AchManager Configuration###With a constant ID")
   {
@@ -65,6 +76,11 @@ public class ConfigWindow : Window
     SizeCondition = ImGuiCond.FirstUseEver;
   }
 
+  #endregion Construction
+
+  /// <summary>
+  /// <inheritdoc/>
+  /// </summary>
   public override void Draw()
   {
     if (ImGui.BeginTabBar("##configTabBar"))
@@ -307,12 +323,7 @@ public class ConfigWindow : Window
       Plugin.Configuration.PreventChatEventManagerLogSpam = preventLogSpam;
       Plugin.Configuration.Save();
     }
-    if (ImGui.IsItemHovered())
-    {
-      ImGui.BeginTooltip();
-      ImGui.SetTooltip("If checked, the ChatEventManager will not print log messages to the Dalamud log");
-      ImGui.EndTooltip();
-    }
+    ImGuiHelper.ShowToolTip("If checked, the ChatEventManager will not print log messages to the Dalamud log");
   }
 
   private static string GetStringForTrigger(AchievementUpdateTriggerBase? trigger)

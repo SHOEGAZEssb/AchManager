@@ -7,7 +7,7 @@ namespace AchManager.AchievementTrigger
   /// Trigger that triggers when a fate has been completed.
   /// </summary>
   [Serializable]
-  public class FateCompletedTrigger : AchievementUpdateTriggerBase
+  public sealed class FateCompletedTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

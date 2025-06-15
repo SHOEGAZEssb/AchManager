@@ -8,7 +8,7 @@ namespace AchManager.EventManager
   /// <summary>
   /// Event manager that informs when a mark is killed.
   /// </summary>
-  internal class MarkKilledEventManager : AchievementUpdateEventManagerBase<MarkKilledEventArgs>
+  internal sealed class MarkKilledEventManager : AchievementUpdateEventManagerBase<MarkKilledEventArgs>
   {
     #region Singleton
 

@@ -28,7 +28,7 @@ namespace AchManager.EventManager
   /// Event args for the <see cref="QuestCompletedEventManager"/>.
   /// </summary>
   /// <param name="completedQuestType">The type of the completed quest.</param>
-  internal class QuestCompletedEventArgs(CompletedQuestType completedQuestType) : EventArgs
+  internal sealed class QuestCompletedEventArgs(CompletedQuestType completedQuestType) : EventArgs
   {
     /// <summary>
     /// The type of the completed quest.

@@ -5,7 +5,7 @@ namespace AchManager.EventManager
   /// <summary>
   /// Event manager that informs about new chat messages.
   /// </summary>
-  internal class ChatMessageEventManager : AchievementUpdateEventManagerBase<ChatMessageEventArgs>
+  internal sealed class ChatMessageEventManager : AchievementUpdateEventManagerBase<ChatMessageEventArgs>
   {
     #region Singleton
 

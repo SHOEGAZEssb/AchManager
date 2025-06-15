@@ -3,7 +3,10 @@ using Newtonsoft.Json;
 
 namespace AchManager.AchievementTrigger
 {
-  internal class BannerShownTrigger : AchievementUpdateTriggerBase
+  /// <summary>
+  /// Trigger that triggers when a specific banner is shown.
+  /// </summary>
+  internal sealed class BannerShownTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

@@ -10,7 +10,7 @@ namespace AchManager.AchievementTrigger
   /// <param name="name">Name of the window.</param>
   /// <param name="flags">ImGui flags for the window.</param>
   /// <param name="forceMainWindow">If the window should be treated as a main window.</param>
-  internal class ChatMessageTriggerConfigWindow(ChatMessageTriggerConfig config, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
+  internal sealed class ChatMessageTriggerConfigWindow(ChatMessageTriggerConfig config, string name, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool forceMainWindow = false)
     : DefaultTriggerConfigWindow(config, name, flags, forceMainWindow)
   {
     #region Properties

@@ -6,7 +6,7 @@ namespace AchManager.AchievementTrigger
   /// <summary>
   /// Trigger that triggers when a certain quest has been completed.
   /// </summary>
-  internal class QuestCompletedTrigger : AchievementUpdateTriggerBase
+  internal sealed class QuestCompletedTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

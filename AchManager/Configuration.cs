@@ -11,7 +11,7 @@ using System.IO;
 namespace AchManager;
 
 [Serializable]
-public class Configuration : IPluginConfiguration
+public sealed class Configuration : IPluginConfiguration
 {
   public int Version { get; set; } = 0;
 

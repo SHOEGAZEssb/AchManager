@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace AchManager
 {
-  public class WatchedAchievement : IDisposable
+  public sealed class WatchedAchievement : IDisposable
   {
     #region Properties
 

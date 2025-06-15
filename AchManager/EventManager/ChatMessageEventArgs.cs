@@ -6,7 +6,7 @@ namespace AchManager.EventManager
   /// Event args for the <see cref="ChatMessageEventManager"/>.
   /// </summary>
   /// <param name="message">Chat message content.</param>
-  internal class ChatMessageEventArgs(string message) : EventArgs
+  internal sealed class ChatMessageEventArgs(string message) : EventArgs
   {
     #region Properties
 

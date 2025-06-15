@@ -29,7 +29,7 @@
   /// <summary>
   /// Configuration for a <see cref="QuestCompletedTrigger"/>.
   /// </summary>
-  internal class QuestCompletedTriggerConfig : TriggerConfig
+  internal sealed class QuestCompletedTriggerConfig : TriggerConfig
   {
     /// <summary>
     /// The quest type to complete for the trigger to trigger.

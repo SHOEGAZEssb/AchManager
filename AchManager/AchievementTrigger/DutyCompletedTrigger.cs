@@ -11,7 +11,7 @@ namespace AchManager.AchievementTrigger
   /// Trigger that triggers when a duty is completed.
   /// </summary>
   [Serializable]
-  public class DutyCompletedTrigger : AchievementUpdateTriggerBase
+  public sealed class DutyCompletedTrigger : AchievementUpdateTriggerBase
   {
     #region Properties
 

@@ -33,7 +33,7 @@ namespace AchManager.EventManager
   /// Event args for the <see cref="MarkKilledEventManager"/>.
   /// </summary>
   /// <param name="rank"></param>
-  internal class MarkKilledEventArgs(KilledEnemyRank rank) : EventArgs
+  internal sealed class MarkKilledEventArgs(KilledEnemyRank rank) : EventArgs
   {
     #region Properties
 

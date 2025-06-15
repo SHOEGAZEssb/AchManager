@@ -2,6 +2,9 @@
 
 namespace AchManager.AchievementTrigger
 {
+  /// <summary>
+  /// Configuration for a <see cref="BannerShownTrigger"/>.
+  /// </summary>
   internal sealed class BannerShownTriggerConfig : TriggerConfig
   {
     public static readonly Dictionary<int, string> AvailableBanners = new()
@@ -38,6 +41,10 @@ namespace AchManager.AchievementTrigger
 
     #region Properties
 
+    /// <summary>
+    /// List of banners that should trigger the trigger when
+    /// being shown.
+    /// </summary>
     public List<int> Banners { get; } = [];
 
     #endregion Properties

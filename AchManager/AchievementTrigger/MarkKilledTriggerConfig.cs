@@ -37,7 +37,7 @@ namespace AchManager.AchievementTrigger
   /// Configuration for a <see cref="MarkKilledTrigger"/>.
   /// </summary>
   [Serializable]
-  public class MarkKilledTriggerConfig : TriggerConfig
+  public sealed class MarkKilledTriggerConfig : TriggerConfig
   {
     #region Properties
 

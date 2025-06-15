@@ -24,7 +24,7 @@ namespace AchManager.AchievementTrigger
   /// Configuration for a <see cref="DutyCompletedTrigger"/>.
   /// </summary>
   [Serializable]
-  public class DutyCompletedTriggerConfig : TriggerConfig
+  public sealed class DutyCompletedTriggerConfig : TriggerConfig
   {
     #region Properties
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AchManager
 {
-  internal class WatchedAchievementManager
+  internal sealed class WatchedAchievementManager
   {
     /// <summary>
     /// Event that is fired when a watched achievement should be removed from any
