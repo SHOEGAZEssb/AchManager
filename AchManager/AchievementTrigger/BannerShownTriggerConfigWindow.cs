@@ -2,7 +2,7 @@
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
 using ECommons.DalamudServices;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace AchManager.AchievementTrigger
 {
@@ -78,7 +78,7 @@ namespace AchManager.AchievementTrigger
       {
         icon = Svc.Texture.GetFromGameIcon(bannerID).GetWrapOrDefault();
         if (icon != null)
-          ImGui.Image(icon.ImGuiHandle, ImGuiHelpers.ScaledVector2(icon.Width * 100f / icon.Height, 100));
+          ImGui.Image(icon.Handle, ImGuiHelpers.ScaledVector2(icon.Width * 100f / icon.Height, 100));
       }
       finally
       {

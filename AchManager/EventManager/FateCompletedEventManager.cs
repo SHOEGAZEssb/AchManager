@@ -56,7 +56,7 @@ namespace AchManager.EventManager
       FateContext* currentFate = null;
       var fm = FateManager.Instance();
 
-      if (fm->CurrentFate != null && (fm->FateJoined == 1 || PlayerState.Instance()->IsLevelSynced == 1))
+      if (fm->CurrentFate != null && (fm->FateJoined == 1 || PlayerState.Instance()->IsLevelSynced))
       {
         currentFate = fm->CurrentFate;
       }

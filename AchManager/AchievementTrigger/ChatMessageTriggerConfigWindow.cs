@@ -1,5 +1,5 @@
 ﻿using AchManager.Windows;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace AchManager.AchievementTrigger
 {
